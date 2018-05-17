@@ -41,19 +41,10 @@ namespace OurIdolBot.Core
                 json = await sr.ReadToEndAsync();
 
             var cfgjson = JsonConvert.DeserializeObject<ConfigJson>(json);
-            var cfg = new DiscordConfiguration
-            {
-                Token = cfgjson.Token,
-                TokenType = TokenType.Bot,
-
-                AutoReconnect = true,
-                LogLevel = LogLevel.Debug,
-                UseInternalLogHandler = true
-            };
 
             var connectionConfig = new DiscordConfiguration
             {
-                Token = cfgjson.CommandPrefix,
+                Token = cfgjson.Token,
                 TokenType = TokenType.Bot,
 
                 AutoReconnect = true,
