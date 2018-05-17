@@ -78,30 +78,33 @@ namespace OurIdolBot.Commands.MusicCommands
         [Aliases("nowPlaying")]
         public async Task NowPlaying(CommandContext ctx)
         {
-            // Create info about song
-            var embed = new DiscordEmbedBuilder
-            {
-                Color = new DiscordColor("#5588EE")
-            };
-            embed.AddField("Radio Anison FM", "Current playing: " + currentPlayingSong);
             // Post info about song
-            await ctx.RespondAsync("", false, embed);
+            await ctx.RespondAsync("", false, CreateEmbed());
         }
 
-        private async void PostSongInfo(EnabledChannel channel)
+        private async void PostNewSongInfo(EnabledChannel channel)
         {
-            // Create info about song
-            var embed = new DiscordEmbedBuilder
-            {
-                Color = new DiscordColor("#5588EE")
-            };
-            embed.AddField("Radio Anison FM", "Current playing: " + currentPlayingSong);
-            // Post info about song
-            channel.lastMessage = await channel.discordChannel.SendMessageAsync("", false, embed);
+            // Post new info about song
+            channel.lastMessage = await channel.discordChannel.SendMessageAsync("", false, CreateEmbed());
         }
 
         private async void RepostSongInfo(EnabledChannel channel)
         {
+            // Try find last message
+            try
+            {
+                var message = await channel.discordChannel.GetMessagesAsync(1);
+                // If last message found, edit it
+                if(message.FirstOrDefault() == channel.lastMessage)
+                {
+                    await channel.lastMessage.ModifyAsync("", CreateEmbed());
+                    return;
+                }
+            }
+            catch (Exception ie)
+            {
+                // Something went wrong
+            }
             // Try delete last message
             try
             {
@@ -111,13 +114,27 @@ namespace OurIdolBot.Commands.MusicCommands
             {
                 //Bot couldn't find message. Maybe someone deleted it.
             }
-            PostSongInfo(channel);
+            PostNewSongInfo(channel);
+        }
 
+        private DiscordEmbed CreateEmbed()
+        {
+            var embed = new DiscordEmbedBuilder
+            {
+                Color = new DiscordColor("#5588EE")
+            };
+            embed.AddField("Radio Anison FM", "Current playing: " + currentPlayingSong);
+            return embed;
         }
 
         private async void GetSongInfo()
         {
+            /*HtmlDocument doc = new HtmlDocument();
+            doc.DocumentNode ("https://hn-development.blogspot.com/");
 
+            var itemList = doc.DocumentNode.SelectNodes("//span[@class='hidden first']")//this xpath selects all span tag having its class as hidden first
+                              .Select(p => p.InnerText)
+                              .ToList();*/
         }
 
         private string StripHTML(string input)
