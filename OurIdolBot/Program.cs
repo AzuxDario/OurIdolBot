@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OurIdolBot.Core;
+using System;
 
 namespace OurIdolBot
 {
@@ -10,6 +7,8 @@ namespace OurIdolBot
     {
         static void Main(string[] args)
         {
+            new Bot().Run();
+            while (Console.ReadLine() != "quit") ;
         }
     }
 }
