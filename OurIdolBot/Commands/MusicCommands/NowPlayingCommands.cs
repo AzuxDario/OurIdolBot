@@ -66,7 +66,7 @@ namespace OurIdolBot.Commands.MusicCommands
             }
             else
             {
-                await ctx.RespondAsync("Auto inform for this channel wasn't enabled");
+                await ctx.RespondAsync("Auto inform for this channel has not been enabled.");
             }
         }
 
@@ -136,7 +136,7 @@ namespace OurIdolBot.Commands.MusicCommands
             {
                 Color = new DiscordColor("#5588EE")
             };
-            embed.AddField("Radio Anison FM", "Current playing: " + currentPlayingSong);
+            embed.AddField("Radio Anison FM", "Current song: " + currentPlayingSong);
             return embed;
         }
 
