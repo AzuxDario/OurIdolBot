@@ -44,6 +44,7 @@ namespace OurIdolBot.Commands.MusicCommands
             {
                 currentChannel = new EnabledChannel(ctx.Channel);
                 enabledChannels.Add(currentChannel);
+                await ctx.RespondAsync("I will inform you on this channel about the current song playing by AnisonFM every 15 seconds.");
             }
             // If we have current song, don't post info about it
             if(currentPlayingSong != string.Empty)
@@ -59,6 +60,7 @@ namespace OurIdolBot.Commands.MusicCommands
         {
             // Remove channel from list
             enabledChannels.RemoveAll(p => p.discordChannel.Id == ctx.Channel.Id);
+            await ctx.RespondAsync("Auto inform for this channel has been turned off.");
         }
 
         private async void RefreshCurrentSongMessages(object state)
