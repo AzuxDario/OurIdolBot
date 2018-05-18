@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\MusicCommands\NowPlayingCommands.cs" />
+    <Compile Include="Containers\MusicContainers\NowPlayingContainer.cs" />
     <Compile Include="Core\Bot.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

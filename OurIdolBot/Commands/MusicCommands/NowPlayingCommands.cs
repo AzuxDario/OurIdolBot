@@ -1,6 +1,8 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using Newtonsoft.Json;
+using OurIdolBot.Containers.MusicContainers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -132,17 +134,17 @@ namespace OurIdolBot.Commands.MusicCommands
         {
             try
             {
-                // Get HTML code of site
-                using (WebClient client = new WebClient())
+                var client = new WebClient();
+                NowPlayingContainer nowPlayingContainer;
+
+                var json = client.DownloadString("http://anison.fm/status.php?widget=true");
+                nowPlayingContainer  = JsonConvert.DeserializeObject<NowPlayingContainer>(json);
+
+                currentPlayingSong = ClearString(nowPlayingContainer.On_air);
+
+                if(currentPlayingSong == string.Empty)
                 {
-                    string htmlCode = client.DownloadString("https://hn-development.blogspot.com/");
-                    Regex regex = new Regex(@"(<span class=""current_track"").*(span>)");
-                    Match result = regex.Match(htmlCode);
-                    currentPlayingSong = StripHTML(result.Groups[0].Value);
-                    if(currentPlayingSong == string.Empty)
-                    {
-                        currentPlayingSong = "I couldn't get song name";
-                    }
+                    currentPlayingSong = "I couldn't get song name";
                 }
             }
             catch (Exception ie)
@@ -152,9 +154,13 @@ namespace OurIdolBot.Commands.MusicCommands
             }
         }
 
-        private string StripHTML(string input)
+        private string ClearString(string input)
         {
-            return Regex.Replace(input, "<.*?>", String.Empty);
+            string temp = Regex.Replace(input, "<.*?>", String.Empty);
+            temp = temp.Replace("В эфире: ", String.Empty);
+            temp = temp.Replace("&#151;", "—");
+
+            return temp;
         }
     }
 
