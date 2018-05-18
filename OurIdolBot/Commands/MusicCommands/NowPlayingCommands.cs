@@ -4,6 +4,7 @@ using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -60,7 +61,7 @@ namespace OurIdolBot.Commands.MusicCommands
         private async void RefreshCurrentSongMessages(object state)
         {
             //download current song
-            currentPlayingSong = "Chika";
+            GetSongInfo();
             // If we have at least one channel repost current song
             if (enabledChannels.Count > 0)
             {
@@ -129,12 +130,26 @@ namespace OurIdolBot.Commands.MusicCommands
 
         private async void GetSongInfo()
         {
-            /*HtmlDocument doc = new HtmlDocument();
-            doc.DocumentNode ("https://hn-development.blogspot.com/");
-
-            var itemList = doc.DocumentNode.SelectNodes("//span[@class='hidden first']")//this xpath selects all span tag having its class as hidden first
-                              .Select(p => p.InnerText)
-                              .ToList();*/
+            try
+            {
+                // Get HTML code of site
+                using (WebClient client = new WebClient())
+                {
+                    string htmlCode = client.DownloadString("https://hn-development.blogspot.com/");
+                    Regex regex = new Regex(@"(<span class=""current_track"").*(span>)");
+                    Match result = regex.Match(htmlCode);
+                    currentPlayingSong = StripHTML(result.Groups[0].Value);
+                    if(currentPlayingSong == string.Empty)
+                    {
+                        currentPlayingSong = "I couldn't get song name";
+                    }
+                }
+            }
+            catch (Exception ie)
+            {
+                // Something went wrong
+                currentPlayingSong = "I couldn't get song name";
+            }
         }
 
         private string StripHTML(string input)
