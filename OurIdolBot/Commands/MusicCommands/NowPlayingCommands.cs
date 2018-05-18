@@ -44,7 +44,7 @@ namespace OurIdolBot.Commands.MusicCommands
             {
                 currentChannel = new EnabledChannel(ctx.Channel);
                 enabledChannels.Add(currentChannel);
-                await ctx.RespondAsync("I will inform you on this channel about the current song playing by AnisonFM every 15 seconds.");
+                await ctx.RespondAsync("I will inform on this channel about the current song playing by AnisonFM every 15 seconds.");
             }
             // If we have current song, don't post info about it
             if(currentPlayingSong != string.Empty)
