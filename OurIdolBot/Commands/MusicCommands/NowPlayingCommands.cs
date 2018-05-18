@@ -29,10 +29,11 @@ namespace OurIdolBot.Commands.MusicCommands
             refreshCurrentSongTimer = new Timer(RefreshCurrentSongMessages, null, refreshCurrentSongInterval, Timeout.Infinite);
             enabledChannels = new List<EnabledChannel>();
             currentPlayingSong = "Waiting for first check...";
+            GetSongInfo();
         }
 
         [Command("enableNowPlaying")]
-        [Description("Enable auto generated messages about current playing song.")]
+        [Description("Enable auto generated messages about current playing song every 15 seconds.")]
         [Aliases("enableNP")]
         public async Task EnableNowPlaying(CommandContext ctx)
         {
@@ -76,9 +77,9 @@ namespace OurIdolBot.Commands.MusicCommands
             refreshCurrentSongTimer.Change(refreshCurrentSongInterval, Timeout.Infinite);
         }
 
-        [Command("np")]
+        [Command("nowPlaying")]
         [Description("Check current playing song.")]
-        [Aliases("nowPlaying")]
+        [Aliases("np")]
         public async Task NowPlaying(CommandContext ctx)
         {
             // Post info about song
