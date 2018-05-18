@@ -59,8 +59,11 @@ namespace OurIdolBot.Commands.MusicCommands
         public async Task DisableNowPlaying(CommandContext ctx)
         {
             // Remove channel from list
-            enabledChannels.RemoveAll(p => p.discordChannel.Id == ctx.Channel.Id);
-            await ctx.RespondAsync("Auto inform for this channel has been turned off.");
+            var howManyRemoved = enabledChannels.RemoveAll(p => p.discordChannel.Id == ctx.Channel.Id);
+            if (howManyRemoved > 0)
+            {
+                await ctx.RespondAsync("Auto inform for this channel has been turned off.");
+            }
         }
 
         private async void RefreshCurrentSongMessages(object state)
