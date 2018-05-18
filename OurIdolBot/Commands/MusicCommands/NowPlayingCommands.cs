@@ -64,6 +64,10 @@ namespace OurIdolBot.Commands.MusicCommands
             {
                 await ctx.RespondAsync("Auto inform for this channel has been turned off.");
             }
+            else
+            {
+                await ctx.RespondAsync("Auto inform for this channel wasn't enabled");
+            }
         }
 
         private async void RefreshCurrentSongMessages(object state)
