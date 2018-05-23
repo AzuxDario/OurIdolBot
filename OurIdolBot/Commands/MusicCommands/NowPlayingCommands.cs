@@ -75,7 +75,7 @@ namespace OurIdolBot.Commands.MusicCommands
             }
         }
 
-        [Command("isEnable")]
+        [Command("isEnabled")]
         [Description("Shows whether auto generated messages are enabled on this channel.")]
         public async Task IsEnable(CommandContext ctx)
         {

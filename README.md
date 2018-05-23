@@ -4,7 +4,7 @@ Simple Discord bot which can send  info about currently playing song by AnisonFM
 # Commands
   * $enableNowPlaying (alias: $enableNP) - Enable auto generated messages about current playing song every 15 seconds.
   * $disableNowPlaying (alias: $disableNP) - Disable auto generated messages about current playing song.
-  * $isEnable - Shows whether auto generated messages are enabled on this channel.
+  * $isEnabled - Shows whether auto generated messages are enabled on this channel.
   * $nowPlaying (alias: $np) - Check current playing song.
   * $help - Shows help.
   * $help <command> - Shows help about specific command.
