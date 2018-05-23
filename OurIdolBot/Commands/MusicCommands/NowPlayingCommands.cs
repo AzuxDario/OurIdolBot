@@ -45,12 +45,17 @@ namespace OurIdolBot.Commands.MusicCommands
                 currentChannel = new EnabledChannel(ctx.Channel);
                 enabledChannels.Add(currentChannel);
                 await ctx.RespondAsync("I will inform on this channel about the current song playing by AnisonFM every 15 seconds.");
+                // If we don't have current song, don't post info about it
+                if (currentPlayingSong != string.Empty)
+                {
+                    RepostSongInfo(currentChannel);
+                }
             }
-            // If we have current song, don't post info about it
-            if(currentPlayingSong != string.Empty)
+            else
             {
-                RepostSongInfo(currentChannel);
+                await ctx.RespondAsync("I'm already posting info on this channel.");
             }
+            
         }
 
         [Command("disableNowPlaying")]
@@ -67,6 +72,22 @@ namespace OurIdolBot.Commands.MusicCommands
             else
             {
                 await ctx.RespondAsync("Auto inform for this channel has not been enabled.");
+            }
+        }
+
+        [Command("isEnable")]
+        [Description("Shows whether auto generated messages are enabled on this channel.")]
+        public async Task IsEnable(CommandContext ctx)
+        {
+            // Search channel in list
+            var channels = enabledChannels.FirstOrDefault(p => p.discordChannel.Id == ctx.Channel.Id);
+            if (channels != null)
+            {
+                await ctx.RespondAsync("Auto inform is enabled on this channel.");
+            }
+            else
+            {
+                await ctx.RespondAsync("Auto inform is disabled on this channel.");
             }
         }
 
