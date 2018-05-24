@@ -138,6 +138,9 @@ namespace OurIdolBot.Commands.MusicCommands
             catch (Exception ie)
             {
                 // Something went wrong
+                Console.WriteLine("Exception: " + ie.Message);
+                Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
+                Console.WriteLine("Stack trace: " + ie.StackTrace);
             }
             // Try delete last message
             try
@@ -147,8 +150,21 @@ namespace OurIdolBot.Commands.MusicCommands
             catch (Exception ie)
             {
                 //Bot couldn't find message. Maybe someone deleted it.
+                Console.WriteLine("Exception: " + ie.Message);
+                Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
+                Console.WriteLine("Stack trace: " + ie.StackTrace);
             }
-            PostNewSongInfo(channel);
+            try
+            {
+                PostNewSongInfo(channel);
+            }
+            catch (Exception ie)
+            {
+                await channel.discordChannel.SendMessageAsync("Something went wrong.");
+                Console.WriteLine("Exception: " + ie.Message);
+                Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
+                Console.WriteLine("Stack trace: " + ie.StackTrace);
+            }
         }
 
         private DiscordEmbed CreateEmbed()
@@ -182,6 +198,9 @@ namespace OurIdolBot.Commands.MusicCommands
             {
                 // Something went wrong
                 currentPlayingSong = "I couldn't get song name";
+                Console.WriteLine("Exception: " + ie.Message);
+                Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
+                Console.WriteLine("Stack trace: " + ie.StackTrace);
             }
         }
 
