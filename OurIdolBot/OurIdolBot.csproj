@@ -63,6 +63,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\ManagementCommands\DescriptionCommand.cs" />
     <Compile Include="Commands\MusicCommands\NowPlayingCommands.cs" />
     <Compile Include="Containers\MusicContainers\NowPlayingContainer.cs" />
     <Compile Include="Core\Bot.cs" />
@@ -75,6 +76,7 @@
     <None Include="config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="config.Release.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

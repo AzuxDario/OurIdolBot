@@ -2,6 +2,7 @@
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Net.WebSocket;
 using Newtonsoft.Json;
+using OurIdolBot.Commands.ManagementCommands;
 using OurIdolBot.Commands.MusicCommands;
 using System;
 using System.Collections.Generic;
@@ -22,11 +23,15 @@ namespace OurIdolBot.Core
 
             [JsonProperty("prefix")]
             public string CommandPrefix { get; private set; }
+
+            [JsonProperty("developer")]
+            public ulong Developer { get; private set; }
         }
 
 
         public static DiscordClient DiscordClient { get; set; }
         private CommandsNextModule _commands { get; set; }
+        public static ConfigJson configJson { get; private set; }
 
         public void Run()
         {
@@ -41,11 +46,11 @@ namespace OurIdolBot.Core
             using (var sr = new StreamReader(fs, new UTF8Encoding(false)))
                 json = await sr.ReadToEndAsync();
 
-            var cfgjson = JsonConvert.DeserializeObject<ConfigJson>(json);
+            configJson = JsonConvert.DeserializeObject<ConfigJson>(json);
 
             var connectionConfig = new DiscordConfiguration
             {
-                Token = cfgjson.Token,
+                Token = configJson.Token,
                 TokenType = TokenType.Bot,
 
                 AutoReconnect = true,
@@ -58,7 +63,7 @@ namespace OurIdolBot.Core
 
             var commandsConfig = new CommandsNextConfiguration
             {
-                StringPrefix = cfgjson.CommandPrefix,
+                StringPrefix = configJson.CommandPrefix,
                 EnableDms = true,
                 EnableMentionPrefix = true,
                 CaseSensitive = false
@@ -66,6 +71,7 @@ namespace OurIdolBot.Core
 
             _commands = DiscordClient.UseCommandsNext(commandsConfig);
             _commands.RegisterCommands<NowPlayingCommands>();
+            _commands.RegisterCommands<DescriptionCommand>();
             _commands.CommandExecuted += Commands_CommandExecuted;
             _commands.CommandErrored += Commands_CommandErrored;
 
