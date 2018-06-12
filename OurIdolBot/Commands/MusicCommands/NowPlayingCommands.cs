@@ -138,6 +138,7 @@ namespace OurIdolBot.Commands.MusicCommands
             catch (Exception ie)
             {
                 // Something went wrong
+                Console.WriteLine("Error: Somehow I couldn't edit last my last message, even if it was last or I haven't post last message yet.");
                 Console.WriteLine("Exception: " + ie.Message);
                 Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
                 Console.WriteLine("Stack trace: " + ie.StackTrace);
@@ -150,6 +151,7 @@ namespace OurIdolBot.Commands.MusicCommands
             catch (Exception ie)
             {
                 //Bot couldn't find message. Maybe someone deleted it.
+                Console.WriteLine("Error: Somehow I couldn't find message. Maybe someone deleted it.");
                 Console.WriteLine("Exception: " + ie.Message);
                 Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
                 Console.WriteLine("Stack trace: " + ie.StackTrace);
@@ -161,6 +163,7 @@ namespace OurIdolBot.Commands.MusicCommands
             catch (Exception ie)
             {
                 await channel.discordChannel.SendMessageAsync("Something went wrong.");
+                Console.WriteLine("Error: Somehow I couldn't post current song info.");
                 Console.WriteLine("Exception: " + ie.Message);
                 Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
                 Console.WriteLine("Stack trace: " + ie.StackTrace);
@@ -197,6 +200,7 @@ namespace OurIdolBot.Commands.MusicCommands
             catch (Exception ie)
             {
                 // Something went wrong
+                Console.WriteLine("Error: I couldn't get song name or error with Anison web site appeared or error with parsing.");
                 currentPlayingSong = "I couldn't get song name";
                 Console.WriteLine("Exception: " + ie.Message);
                 Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
