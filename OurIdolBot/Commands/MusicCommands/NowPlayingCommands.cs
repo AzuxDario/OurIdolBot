@@ -128,11 +128,15 @@ namespace OurIdolBot.Commands.MusicCommands
             try
             {
                 var message = await channel.discordChannel.GetMessagesAsync(1);
-                // If last message found, edit it
-                if(message.FirstOrDefault() == channel.lastMessage)
+                // If last messgae exist
+                if (channel.lastMessage != null)
                 {
-                    await channel.lastMessage.ModifyAsync("", CreateEmbed());
-                    return;
+                    // If last message on channel is last message bot posted, edit it
+                    if (message.FirstOrDefault() == channel.lastMessage)
+                    {
+                        await channel.lastMessage.ModifyAsync("", CreateEmbed());
+                        return;
+                    }
                 }
             }
             catch (Exception ie)
@@ -146,7 +150,10 @@ namespace OurIdolBot.Commands.MusicCommands
             // Try delete last message
             try
             {
-                await channel.discordChannel.DeleteMessageAsync(channel.lastMessage);
+                if (channel.lastMessage != null)
+                {
+                    await channel.discordChannel.DeleteMessageAsync(channel.lastMessage);
+                }
             }
             catch (Exception ie)
             {
