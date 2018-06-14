@@ -242,5 +242,5 @@ ModelManifest.xml
 .fake/
 
 
-/OurIdolBot/config.json
-/OurIdolBot/config.Release.json
+/OurIdolBot/debug.json
+/OurIdolBot/release.json

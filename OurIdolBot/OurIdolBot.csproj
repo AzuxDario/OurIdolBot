@@ -73,10 +73,12 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="config.example.json" />
-    <None Include="config.json">
+    <None Include="debug.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="config.Release.json" />
+    <None Include="release.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

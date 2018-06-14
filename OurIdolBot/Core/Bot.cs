@@ -42,7 +42,13 @@ namespace OurIdolBot.Core
         private async void Connect()
         {
             var json = "";
-            using (var fs = File.OpenRead("config.json"))
+            string settingsFile;
+#if DEBUG
+            settingsFile = "debug.json";
+#else
+            settingsFile = "release.json";
+#endif
+            using (var fs = File.OpenRead(settingsFile))
             using (var sr = new StreamReader(fs, new UTF8Encoding(false)))
                 json = await sr.ReadToEndAsync();
 
