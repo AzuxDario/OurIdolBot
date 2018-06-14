@@ -176,7 +176,7 @@ namespace OurIdolBot.Commands.MusicCommands
             {
                 Color = new DiscordColor("#5588EE")
             };
-            embed.AddField("Radio Anison FM", "Current song: " + currentPlayingSong);
+            embed.AddField("Radio Anison FM", "Current song: " + currentPlayingSong + "\nLast update: " + DateTime.UtcNow.ToString(@"HH:mm:ss") + " UTC");
             return embed;
         }
 
