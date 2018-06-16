@@ -15,7 +15,6 @@ namespace OurIdolBot.Commands.ManagementCommands
     {
         private Timer refreshDescriptionTimer;
         private int refreshDescriptionInterval;
-        private ulong developer = 386559253088829440; //Azux Dario#2860
 
         private string game;
 
