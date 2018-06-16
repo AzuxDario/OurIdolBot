@@ -65,7 +65,14 @@ namespace OurIdolBot.Core
             };
 
             DiscordClient = new DiscordClient(connectionConfig);
+
+#if DEBUG
+            // For Windows 7 I'm using to test
             DiscordClient.SetWebSocketClient<WebSocket4NetClient>();
+#else
+            // For Mono I'm using to release
+            DiscordClient.SetWebSocketClient<WebSocketSharpClient>();
+#endif
 
             var commandsConfig = new CommandsNextConfiguration
             {
