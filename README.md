@@ -7,7 +7,8 @@ Simple Discord bot which can send  info about currently playing song by AnisonFM
   * $isEnabled - Shows whether auto generated messages are enabled on this channel.
   * $nowPlaying (alias: $np) - Check current playing song.
   * $help - Shows help.
-  * $help <command> - Shows help about specific command.
+  * $help command - Shows help about specific command.
+  * $ping - Check ping
  
 # Invitation link
  https://discordapp.com/oauth2/authorize?&client_id=446754812177022998&scope=bot&permissions=0
