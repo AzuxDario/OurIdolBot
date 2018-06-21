@@ -72,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\ManagementCommands\DescriptionCommand.cs" />
+    <Compile Include="Commands\ManagementCommands\PingCommand.cs" />
     <Compile Include="Commands\MusicCommands\NowPlayingCommands.cs" />
     <Compile Include="Containers\MusicContainers\NowPlayingContainer.cs" />
     <Compile Include="Core\Bot.cs" />

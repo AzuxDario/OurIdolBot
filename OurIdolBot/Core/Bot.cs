@@ -4,6 +4,7 @@ using DSharpPlus.Net.WebSocket;
 using Newtonsoft.Json;
 using OurIdolBot.Commands.ManagementCommands;
 using OurIdolBot.Commands.MusicCommands;
+using OurIdolBot.Commands.OtherCommands;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -85,6 +86,7 @@ namespace OurIdolBot.Core
             _commands = DiscordClient.UseCommandsNext(commandsConfig);
             _commands.RegisterCommands<NowPlayingCommands>();
             _commands.RegisterCommands<DescriptionCommand>();
+            _commands.RegisterCommands<PingCommand>();
             _commands.CommandExecuted += Commands_CommandExecuted;
             _commands.CommandErrored += Commands_CommandErrored;
 
