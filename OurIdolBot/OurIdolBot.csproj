@@ -72,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\CommandsGroupAttribute.cs" />
+    <Compile Include="Commands\ConversionCommans.cs\ConversionCommands.cs" />
     <Compile Include="Commands\ManagementCommands\DescriptionCommand.cs" />
     <Compile Include="Commands\ManagementCommands\PingCommand.cs" />
     <Compile Include="Commands\MusicCommands\NowPlayingCommands.cs" />

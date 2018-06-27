@@ -2,12 +2,20 @@
 Simple Discord bot which can send  info about currently playing song by AnisonFM radio. The bot can shows info once or auto update it on chosen channel every 15 seconds.
 
 # Commands
+## Music
   * $enableNowPlaying (alias: $enableNP) - Enable auto generated messages about current playing song every 15 seconds.
   * $disableNowPlaying (alias: $disableNP) - Disable auto generated messages about current playing song.
   * $isEnabled - Shows whether auto generated messages are enabled on this channel.
   * $nowPlaying (alias: $np) - Check current playing song.
+ ## Conversion
+  * $kmToMiles - Convert kilometers to miles.
+  * $milesToKm - Convert miles to kilometers.
+  * $cToF - Convert Celsius to Fahrenheit.
+  * $fToC - Convert Fahrenheit to Celsius.
+ ## Help
   * $help - Shows help.
   * $help command - Shows help about specific command.
+ ## Special
   * $ping - Check ping
  
 # Invitation link
