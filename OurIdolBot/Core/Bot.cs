@@ -86,6 +86,7 @@ namespace OurIdolBot.Core
             };
 
             _commands = DiscordClient.UseCommandsNext(commandsConfig);
+            _commands.SetHelpFormatter<CustomHelpFormatter>();
             _commands.CommandExecuted += Commands_CommandExecuted;
             _commands.CommandErrored += Commands_CommandErrored;
             RegisterCommands();
