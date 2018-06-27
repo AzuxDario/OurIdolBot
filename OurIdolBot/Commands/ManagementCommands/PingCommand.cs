@@ -1,9 +1,11 @@
 ﻿using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
+using OurIdolBot.Attributes;
 
 namespace OurIdolBot.Commands.OtherCommands
 {
+    [CommandsGroup("Special")]
     public class PingCommand
     {
         [Command("ping")]

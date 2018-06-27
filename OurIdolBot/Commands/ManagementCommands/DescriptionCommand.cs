@@ -1,6 +1,7 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using OurIdolBot.Attributes;
 using OurIdolBot.Core;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace OurIdolBot.Commands.ManagementCommands
 {
+    [CommandsGroup("Special")]
     class DescriptionCommand
     {
         private Timer refreshDescriptionTimer;

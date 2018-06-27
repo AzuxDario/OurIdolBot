@@ -2,6 +2,7 @@
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Net.WebSocket;
 using Newtonsoft.Json;
+using OurIdolBot.Attributes;
 using OurIdolBot.Commands.ManagementCommands;
 using OurIdolBot.Commands.MusicCommands;
 using OurIdolBot.Commands.OtherCommands;
@@ -10,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -84,11 +86,9 @@ namespace OurIdolBot.Core
             };
 
             _commands = DiscordClient.UseCommandsNext(commandsConfig);
-            _commands.RegisterCommands<NowPlayingCommands>();
-            _commands.RegisterCommands<DescriptionCommand>();
-            _commands.RegisterCommands<PingCommand>();
             _commands.CommandExecuted += Commands_CommandExecuted;
             _commands.CommandErrored += Commands_CommandErrored;
+            RegisterCommands();
 
             await DiscordClient.ConnectAsync();
         }
@@ -97,6 +97,25 @@ namespace OurIdolBot.Core
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 |
                                                    SecurityProtocolType.Tls12;
+        }
+
+        private void RegisterCommands()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var assemblyTypes = assembly.GetTypes();
+
+            var registerCommandsMethod = _commands.GetType().GetMethods()
+                .FirstOrDefault(p => p.Name == "RegisterCommands" && p.IsGenericMethod);
+
+            foreach (var type in assemblyTypes)
+            {
+                var attributes = type.GetCustomAttributes();
+                if (attributes.Any(p => p.GetType() == typeof(CommandsGroupAttribute)))
+                {
+                    var genericRegisterCommandMethod = registerCommandsMethod.MakeGenericMethod(type);
+                    genericRegisterCommandMethod.Invoke(_commands, null);
+                }
+            }
         }
 
         private Task Commands_CommandExecuted(CommandExecutionEventArgs e)

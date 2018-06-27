@@ -2,6 +2,7 @@
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using Newtonsoft.Json;
+using OurIdolBot.Attributes;
 using OurIdolBot.Containers.MusicContainers;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace OurIdolBot.Commands.MusicCommands
 {
+    [CommandsGroup("Music")]
     class NowPlayingCommands
     {
 
