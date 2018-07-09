@@ -6,6 +6,7 @@ using OurIdolBot.Attributes;
 using OurIdolBot.Containers.MusicContainers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -136,8 +137,19 @@ namespace OurIdolBot.Commands.MusicCommands
                     // If last message on channel is last message bot posted, edit it
                     if (message.FirstOrDefault() == channel.lastMessage)
                     {
-                        await channel.lastMessage.ModifyAsync("", CreateEmbed());
-                        return;
+                        try
+                        {
+                            await channel.lastMessage.ModifyAsync("", CreateEmbed());
+                            return;
+                        }
+                        catch(Exception ie)
+                        {
+                            // Something went wrong
+                            Console.WriteLine("Error: Somehow I couldn't edit last my last message, even if it was last.");
+                            Console.WriteLine("Exception: " + ie.Message);
+                            Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
+                            Console.WriteLine("Stack trace: " + ie.StackTrace);
+                        }              
                     }
                 }
             }
@@ -191,12 +203,13 @@ namespace OurIdolBot.Commands.MusicCommands
 
         private async void GetSongInfo()
         {
+            string json = "";
             try
             {
                 var client = new WebClient();
                 NowPlayingContainer nowPlayingContainer;
 
-                var json = client.DownloadString("http://anison.fm/status.php?widget=true");
+                json = client.DownloadString("http://anison.fm/status.php?widget=true");
                 nowPlayingContainer  = JsonConvert.DeserializeObject<NowPlayingContainer>(json);
 
                 currentPlayingSong = ClearString(nowPlayingContainer.On_air);
@@ -214,6 +227,14 @@ namespace OurIdolBot.Commands.MusicCommands
                 Console.WriteLine("Exception: " + ie.Message);
                 Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
                 Console.WriteLine("Stack trace: " + ie.StackTrace);
+                using (var streamWriter = new StreamWriter("jsons.txt", true, Encoding.UTF8))
+                {
+                    streamWriter.WriteLine("Error: I couldn't get song name or error with Anison web site appeared or error with parsing.");
+                    streamWriter.WriteLine("Exception: " + ie.Message);
+                    streamWriter.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
+                    streamWriter.WriteLine("Stack trace: " + ie.StackTrace);
+                    streamWriter.WriteLine("JSON: " + json);
+                }
             }
         }
 
