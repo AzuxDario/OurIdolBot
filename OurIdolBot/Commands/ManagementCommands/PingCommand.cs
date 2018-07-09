@@ -5,7 +5,7 @@ using OurIdolBot.Attributes;
 
 namespace OurIdolBot.Commands.OtherCommands
 {
-    [CommandsGroup("Special")]
+    [CommandsGroup("Management")]
     public class PingCommand
     {
         [Command("ping")]

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace OurIdolBot.Commands.ManagementCommands
 {
-    [CommandsGroup("Special")]
+    [CommandsGroup("Management")]
     class DescriptionCommand
     {
         private Timer refreshDescriptionTimer;
