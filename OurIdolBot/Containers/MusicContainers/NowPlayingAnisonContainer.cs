@@ -1,6 +1,6 @@
 ﻿namespace OurIdolBot.Containers.MusicContainers
 {
-    class NowPlayingContainer
+    class NowPlayingAnisonContainer
     {
         public string Duration { get; set; }
         public string Listeners { get; set; }

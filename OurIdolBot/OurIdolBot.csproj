@@ -77,7 +77,10 @@
     <Compile Include="Commands\ManagementCommands\DescriptionCommand.cs" />
     <Compile Include="Commands\ManagementCommands\PingCommand.cs" />
     <Compile Include="Commands\MusicCommands\NowPlayingCommands.cs" />
-    <Compile Include="Containers\MusicContainers\NowPlayingContainer.cs" />
+    <Compile Include="Const\MusicConst\NowPlayingBlueIvanaConst.cs" />
+    <Compile Include="Containers\MusicContainers\NowPlayingAnisonContainer.cs" />
+    <Compile Include="Containers\MusicContainers\NowPlayingBlueIvanaContainer.cs" />
+    <Compile Include="Containers\MusicContainers\NowPlayingJMusicContainer.cs" />
     <Compile Include="Core\Bot.cs" />
     <Compile Include="CustomHelpFormatter.cs" />
     <Compile Include="Program.cs" />
