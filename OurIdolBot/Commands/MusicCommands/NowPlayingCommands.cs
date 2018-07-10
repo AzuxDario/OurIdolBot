@@ -46,6 +46,7 @@ namespace OurIdolBot.Commands.MusicCommands
             httpClientHandler = new HttpClientHandler();
             httpClientHandler.CookieContainer = cookies;
 
+            GetBlueIvanaCookies();
             GetSongInfo();
         }
 
@@ -291,14 +292,14 @@ namespace OurIdolBot.Commands.MusicCommands
             catch (Exception ie)
             {
                 // Something went wrong
-                Console.WriteLine("Error: I couldn't get song name or error with Anison web site appeared or error with parsing.");
+                Console.WriteLine("Error: I couldn't get song name or error with JMusic web site appeared or error with parsing.");
                 currentJMusicPlayingSong = "I couldn't get song name";
                 Console.WriteLine("Exception: " + ie.Message);
                 Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
                 Console.WriteLine("Stack trace: " + ie.StackTrace);
                 using (var streamWriter = new StreamWriter("jsons.txt", true, Encoding.UTF8))
                 {
-                    streamWriter.WriteLine("Error: I couldn't get song name or error with Anison web site appeared or error with parsing.");
+                    streamWriter.WriteLine("Error: I couldn't get song name or error with JMusic web site appeared or error with parsing.");
                     streamWriter.WriteLine("Exception: " + ie.Message);
                     streamWriter.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
                     streamWriter.WriteLine("Stack trace: " + ie.StackTrace);
@@ -339,14 +340,14 @@ namespace OurIdolBot.Commands.MusicCommands
             catch (Exception ie)
             {
                 // Something went wrong
-                Console.WriteLine("Error: I couldn't get song name or error with Anison web site appeared or error with parsing.");
+                Console.WriteLine("Error: I couldn't get song name or error with Blue Ivana web site appeared or error with parsing.");
                 currentBlueIvanaPlayingSong = "I couldn't get song name";
                 Console.WriteLine("Exception: " + ie.Message);
                 Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
                 Console.WriteLine("Stack trace: " + ie.StackTrace);
                 using (var streamWriter = new StreamWriter("jsons.txt", true, Encoding.UTF8))
                 {
-                    streamWriter.WriteLine("Error: I couldn't get song name or error with Anison web site appeared or error with parsing.");
+                    streamWriter.WriteLine("Error: I couldn't get song name or error with Blue Ivana web site appeared or error with parsing.");
                     streamWriter.WriteLine("Exception: " + ie.Message);
                     streamWriter.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
                     streamWriter.WriteLine("Stack trace: " + ie.StackTrace);
@@ -357,48 +358,21 @@ namespace OurIdolBot.Commands.MusicCommands
 
         private async void GetBlueIvanaCookies()
         {
-            string json = "";
             HttpResponseMessage response;
             try
             {
                 var client = new HttpClient(httpClientHandler);
-                NowPlayingBlueIvanaContainer nowPlayingContainer;
 
                 response = await client.PostAsync("https://www.radionomy.com/en/OnAir/GetCurrentSongPlayer",
                     new StringContent(JsonConvert.SerializeObject(new NowPlayingBlueIvanaConst()), Encoding.UTF8, "application/json"));
-                if (response.IsSuccessStatusCode)
-                {
-                    json = await response.Content.ReadAsStringAsync();
-                    nowPlayingContainer = JsonConvert.DeserializeObject<NowPlayingBlueIvanaContainer>(json);
-
-                    currentBlueIvanaPlayingSong = nowPlayingContainer.Artist + " - " + nowPlayingContainer.Title;
-
-                    if (currentBlueIvanaPlayingSong == string.Empty)
-                    {
-                        currentBlueIvanaPlayingSong = "I couldn't get song name";
-                    }
-                }
-                else
-                {
-                    currentBlueIvanaPlayingSong = "I couldn't get song name";
-                }
             }
             catch (Exception ie)
             {
                 // Something went wrong
-                Console.WriteLine("Error: I couldn't get song name or error with Anison web site appeared or error with parsing.");
-                currentBlueIvanaPlayingSong = "I couldn't get song name";
+                Console.WriteLine("Error: I couldn't get cookies name or error with Blue Ivana web site appeared or error with parsing.");
                 Console.WriteLine("Exception: " + ie.Message);
                 Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
                 Console.WriteLine("Stack trace: " + ie.StackTrace);
-                using (var streamWriter = new StreamWriter("jsons.txt", true, Encoding.UTF8))
-                {
-                    streamWriter.WriteLine("Error: I couldn't get song name or error with Anison web site appeared or error with parsing.");
-                    streamWriter.WriteLine("Exception: " + ie.Message);
-                    streamWriter.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
-                    streamWriter.WriteLine("Stack trace: " + ie.StackTrace);
-                    streamWriter.WriteLine("JSON: " + json);
-                }
             }
         }
 
