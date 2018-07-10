@@ -26,6 +26,9 @@ namespace OurIdolBot.Commands.MusicCommands
         private string currentAnisonPlayingSong;
         private string currentJMusicPlayingSong;
         private string currentBlueIvanaPlayingSong;
+        
+        CookieContainer cookies;
+        HttpClientHandler httpClientHandler;
 
         private Timer refreshCurrentSongTimer;
         private int refreshCurrentSongInterval;
@@ -38,6 +41,11 @@ namespace OurIdolBot.Commands.MusicCommands
             currentAnisonPlayingSong = "Waiting for first check...";
             currentJMusicPlayingSong = "Waiting for first check...";
             currentBlueIvanaPlayingSong = "Waiting for first check...";
+
+            cookies = new CookieContainer();
+            httpClientHandler = new HttpClientHandler();
+            httpClientHandler.CookieContainer = cookies;
+
             GetSongInfo();
         }
 
@@ -305,7 +313,7 @@ namespace OurIdolBot.Commands.MusicCommands
             HttpResponseMessage response;
             try
             {
-                var client = new HttpClient();
+                var client = new HttpClient(httpClientHandler);
                 NowPlayingBlueIvanaContainer nowPlayingContainer;
 
                 response = await client.PostAsync("https://www.radionomy.com/en/OnAir/GetCurrentSongPlayer",
@@ -313,6 +321,7 @@ namespace OurIdolBot.Commands.MusicCommands
                 if (response.IsSuccessStatusCode)
                 {
                     json = await response.Content.ReadAsStringAsync();
+                    json = ClearBlueIvanaString(json);
                     nowPlayingContainer = JsonConvert.DeserializeObject<NowPlayingBlueIvanaContainer>(json);
 
                     currentBlueIvanaPlayingSong = nowPlayingContainer.Artist + " - " + nowPlayingContainer.Title;
@@ -352,7 +361,7 @@ namespace OurIdolBot.Commands.MusicCommands
             HttpResponseMessage response;
             try
             {
-                var client = new HttpClient();
+                var client = new HttpClient(httpClientHandler);
                 NowPlayingBlueIvanaContainer nowPlayingContainer;
 
                 response = await client.PostAsync("https://www.radionomy.com/en/OnAir/GetCurrentSongPlayer",
@@ -398,6 +407,15 @@ namespace OurIdolBot.Commands.MusicCommands
             string temp = Regex.Replace(input, "<.*?>", String.Empty);
             temp = temp.Replace("В эфире: ", String.Empty);
             temp = temp.Replace("&#151;", "—");
+
+            return temp;
+        }
+
+        private string ClearBlueIvanaString(string input)
+        {
+            string temp = input.Replace("\\\"", "\"");
+            temp = temp.Remove(0, 1);
+            temp = temp.Remove(temp.Length - 1, 1);
 
             return temp;
         }
