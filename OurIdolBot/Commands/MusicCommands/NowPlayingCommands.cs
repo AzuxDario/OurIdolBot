@@ -406,7 +406,7 @@ namespace OurIdolBot.Commands.MusicCommands
         {
             string temp = Regex.Replace(input, "<.*?>", String.Empty);
             temp = temp.Replace("В эфире: ", String.Empty);
-            temp = temp.Replace("&#151;", "—");
+            temp = temp.Replace("&#151;", "-");
 
             return temp;
         }
