@@ -1,5 +1,9 @@
 # Our Idol bot
-Simple Discord bot which can send  info about currently playing song by AnisonFM radio. The bot can shows info once or auto update it on chosen channel every 15 seconds.
+Simple Discord bot which can send  info about currently playing song by AnisonFM, J-Pop Project Radio and Blue Anime Ivana radios. The bot can shows info once or auto update it on chosen channel every 15 seconds. Bot also shows links to these radios.
+
+# Origin
+Bot was made by me for one of servers where I am. I was asked to write it because bot we use to play radios doesn't shows current song longer.
+Feel free to add it to your server if you want.
 
 # Commands
 ## Music
@@ -7,15 +11,15 @@ Simple Discord bot which can send  info about currently playing song by AnisonFM
   * $disableNowPlaying (alias: $disableNP) - Disable auto generated messages about current playing song.
   * $isEnabled - Shows whether auto generated messages are enabled on this channel.
   * $nowPlaying (alias: $np) - Check current playing song.
- ## Conversion
+## Conversion
   * $kmToMiles - Convert kilometers to miles.
   * $milesToKm - Convert miles to kilometers.
   * $cToF - Convert Celsius to Fahrenheit.
   * $fToC - Convert Fahrenheit to Celsius.
- ## Help
+## Help
   * $help - Shows help.
   * $help command - Shows help about specific command.
- ## Special
+## Special
   * $ping - Check ping
  
 # Invitation link
