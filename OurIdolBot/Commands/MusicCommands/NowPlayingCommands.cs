@@ -206,9 +206,9 @@ namespace OurIdolBot.Commands.MusicCommands
             {
                 Color = new DiscordColor("#5588EE")
             };
-            embed.AddField("Current playing songs", "**Radio Anison FM**\n" + currentAnisonPlayingSong +
-                "\n\n**Radio Blue Anime Ivana**\n" + currentBlueIvanaPlayingSong +
-                "\n\n**J-Pop Project Radio**\n" + currentJMusicPlayingSong +
+            embed.AddField("Current playing songs", "**Radio Anison FM**\n" + currentAnisonPlayingSong + "\n" + RadiosLinksConst.AnisonFm + 
+                "\n\n**Radio Blue Anime Ivana**\n" + currentBlueIvanaPlayingSong + "\n" + RadiosLinksConst.BlueIvana +
+                "\n\n**J-Pop Project Radio**\n" + currentJMusicPlayingSong + "\n" + RadiosLinksConst.JMusic +
                 "\n\nLast update: " + DateTime.UtcNow.ToString(@"HH:mm:ss") + " UTC");
             return embed;
         }
@@ -228,7 +228,7 @@ namespace OurIdolBot.Commands.MusicCommands
                 var client = new WebClient();
                 NowPlayingAnisonContainer nowPlayingContainer;
 
-                json = client.DownloadString("http://anison.fm/status.php?widget=true");
+                json = client.DownloadString(RadiosLinksDataConst.AnisonFm);
                 if (json.Length > 0)
                 {
                     nowPlayingContainer = JsonConvert.DeserializeObject<NowPlayingAnisonContainer>(json);
@@ -272,7 +272,7 @@ namespace OurIdolBot.Commands.MusicCommands
                 var client = new WebClient();
                 NowPlayingJMusicContainer nowPlayingContainer;
 
-                json = client.DownloadString("http://player.abovecast.com/streamdata.php?h=agnes.torontocast.com&p=8083&i=&f=v2&c=");
+                json = client.DownloadString(RadiosLinksDataConst.JMusic);
                 if (json.Length > 0)
                 {
                     nowPlayingContainer = JsonConvert.DeserializeObject<NowPlayingJMusicContainer>(json);
@@ -317,7 +317,7 @@ namespace OurIdolBot.Commands.MusicCommands
                 var client = new HttpClient(httpClientHandler);
                 NowPlayingBlueIvanaContainer nowPlayingContainer;
 
-                response = await client.PostAsync("https://www.radionomy.com/en/OnAir/GetCurrentSongPlayer",
+                response = await client.PostAsync(RadiosLinksDataConst.BlueIvana,
                     new StringContent(JsonConvert.SerializeObject(new NowPlayingBlueIvanaConst()), Encoding.UTF8, "application/json"));
                 if (response.IsSuccessStatusCode)
                 {
@@ -363,7 +363,7 @@ namespace OurIdolBot.Commands.MusicCommands
             {
                 var client = new HttpClient(httpClientHandler);
 
-                response = await client.PostAsync("https://www.radionomy.com/en/OnAir/GetCurrentSongPlayer",
+                response = await client.PostAsync(RadiosLinksDataConst.BlueIvana,
                     new StringContent(JsonConvert.SerializeObject(new NowPlayingBlueIvanaConst()), Encoding.UTF8, "application/json"));
             }
             catch (Exception ie)

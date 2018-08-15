@@ -78,6 +78,8 @@
     <Compile Include="Commands\ManagementCommands\PingCommand.cs" />
     <Compile Include="Commands\MusicCommands\NowPlayingCommands.cs" />
     <Compile Include="Const\MusicConst\NowPlayingBlueIvanaConst.cs" />
+    <Compile Include="Const\MusicConst\RadiosLinksConst.cs" />
+    <Compile Include="Const\MusicConst\RadiosLinksDataConst.cs" />
     <Compile Include="Containers\MusicContainers\NowPlayingAnisonContainer.cs" />
     <Compile Include="Containers\MusicContainers\NowPlayingBlueIvanaContainer.cs" />
     <Compile Include="Containers\MusicContainers\NowPlayingJMusicContainer.cs" />
