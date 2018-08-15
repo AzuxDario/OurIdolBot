@@ -62,7 +62,7 @@ namespace OurIdolBot.Commands.MusicCommands
             {
                 currentChannel = new EnabledChannel(ctx.Channel);
                 enabledChannels.Add(currentChannel);
-                await ctx.RespondAsync("I will inform on this channel about the current song playing by AnisonFM every 15 seconds.");
+                await ctx.RespondAsync("I will inform on this channel about the current songs playing every 15 seconds.");
                 // If we don't have current song, don't post info about it
                 if (currentAnisonPlayingSong != string.Empty)
                 {
@@ -208,7 +208,7 @@ namespace OurIdolBot.Commands.MusicCommands
             };
             embed.AddField("Current playing songs", "**Radio Anison FM**\n" + currentAnisonPlayingSong +
                 "\n\n**Radio Blue Anime Ivana**\n" + currentBlueIvanaPlayingSong +
-                "\n\n**Radio JMusic**\n" + currentJMusicPlayingSong +
+                "\n\n**J-Pop Project Radio**\n" + currentJMusicPlayingSong +
                 "\n\nLast update: " + DateTime.UtcNow.ToString(@"HH:mm:ss") + " UTC");
             return embed;
         }
