@@ -1,18 +1,14 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
-using Newtonsoft.Json;
 using OurIdolBot.Attributes;
 using OurIdolBot.Const.MusicConst;
-using OurIdolBot.Containers.MusicContainers;
+using OurIdolBot.Providers.MusicProviders;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,7 +17,7 @@ namespace OurIdolBot.Commands.MusicCommands
     [CommandsGroup("Music")]
     class NowPlayingCommands
     {
-
+        
         private List<EnabledChannel> enabledChannels;
         private string currentAnisonPlayingSong;
         private string currentJMusicPlayingSong;
@@ -46,7 +42,7 @@ namespace OurIdolBot.Commands.MusicCommands
             httpClientHandler = new HttpClientHandler();
             httpClientHandler.CookieContainer = cookies;
 
-            GetBlueIvanaCookies();
+            BlueIvanaProvider.GetBlueIvanaCookies(httpClientHandler);
             GetSongInfo();
         }
 
@@ -208,191 +204,18 @@ namespace OurIdolBot.Commands.MusicCommands
             };
             embed.AddField("Current playing songs", "**Radio Anison FM**\n" + currentAnisonPlayingSong + "\n" + RadiosLinksConst.AnisonFm + 
                 "\n\n**Radio Blue Anime Ivana**\n" + currentBlueIvanaPlayingSong + "\n" + RadiosLinksConst.BlueIvana +
-                "\n\n**J-Pop Project Radio**\n" + currentJMusicPlayingSong + "\n" + RadiosLinksConst.JMusic +
+                "\n\n**J-Pop Project Radio (JMusic)**\n" + currentJMusicPlayingSong + "\n" + RadiosLinksConst.JMusic +
                 "\n\nLast update: " + DateTime.UtcNow.ToString(@"HH:mm:ss") + " UTC");
             return embed;
         }
 
         private async void GetSongInfo()
         {
-            GetAnisonSongInfo();
-            GetJMusicSongInfo();
-            GetBlueIvanaSongInfo();
+            currentAnisonPlayingSong = await AnisonProvider.GetAnisonSongInfo();
+            currentJMusicPlayingSong = await JMusicProvicer.GetJMusicSongInfo();
+            currentBlueIvanaPlayingSong = await BlueIvanaProvider.GetBlueIvanaSongInfo(httpClientHandler);
         }
 
-        private async void GetAnisonSongInfo()
-        {
-            string json = "";
-            try
-            {
-                var client = new WebClient();
-                NowPlayingAnisonContainer nowPlayingContainer;
-
-                json = client.DownloadString(RadiosLinksDataConst.AnisonFm);
-                if (json.Length > 0)
-                {
-                    nowPlayingContainer = JsonConvert.DeserializeObject<NowPlayingAnisonContainer>(json);
-
-                    currentAnisonPlayingSong = ClearAnisonString(nowPlayingContainer.On_air);
-
-                    if (currentAnisonPlayingSong == string.Empty)
-                    {
-                        currentAnisonPlayingSong = "I couldn't get song name";
-                    }
-                }
-                else
-                {
-                    currentAnisonPlayingSong = "I couldn't get song name";
-                }
-            }
-            catch (Exception ie)
-            {
-                // Something went wrong
-                Console.WriteLine("Error: I couldn't get song name or error with Anison web site appeared or error with parsing.");
-                currentAnisonPlayingSong = "I couldn't get song name";
-                Console.WriteLine("Exception: " + ie.Message);
-                Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
-                Console.WriteLine("Stack trace: " + ie.StackTrace);
-                using (var streamWriter = new StreamWriter("jsons.txt", true, Encoding.UTF8))
-                {
-                    streamWriter.WriteLine("Error: I couldn't get song name or error with Anison web site appeared or error with parsing.");
-                    streamWriter.WriteLine("Exception: " + ie.Message);
-                    streamWriter.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
-                    streamWriter.WriteLine("Stack trace: " + ie.StackTrace);
-                    streamWriter.WriteLine("JSON: " + json);
-                }
-            }
-        }
-
-        private async void GetJMusicSongInfo()
-        {
-            string json = "";
-            try
-            {
-                var client = new WebClient();
-                NowPlayingJMusicContainer nowPlayingContainer;
-
-                json = client.DownloadString(RadiosLinksDataConst.JMusic);
-                if (json.Length > 0)
-                {
-                    nowPlayingContainer = JsonConvert.DeserializeObject<NowPlayingJMusicContainer>(json);
-
-                    currentJMusicPlayingSong = nowPlayingContainer.Song;
-
-                    if (currentJMusicPlayingSong == string.Empty)
-                    {
-                        currentJMusicPlayingSong = "I couldn't get song name";
-                    }
-                }
-                else
-                {
-                    currentJMusicPlayingSong = "I couldn't get song name";
-                }
-            }
-            catch (Exception ie)
-            {
-                // Something went wrong
-                Console.WriteLine("Error: I couldn't get song name or error with JMusic web site appeared or error with parsing.");
-                currentJMusicPlayingSong = "I couldn't get song name";
-                Console.WriteLine("Exception: " + ie.Message);
-                Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
-                Console.WriteLine("Stack trace: " + ie.StackTrace);
-                using (var streamWriter = new StreamWriter("jsons.txt", true, Encoding.UTF8))
-                {
-                    streamWriter.WriteLine("Error: I couldn't get song name or error with JMusic web site appeared or error with parsing.");
-                    streamWriter.WriteLine("Exception: " + ie.Message);
-                    streamWriter.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
-                    streamWriter.WriteLine("Stack trace: " + ie.StackTrace);
-                    streamWriter.WriteLine("JSON: " + json);
-                }
-            }
-        }
-
-        private async void GetBlueIvanaSongInfo()
-        {
-            string json = "";
-            HttpResponseMessage response;
-            try
-            {
-                var client = new HttpClient(httpClientHandler);
-                NowPlayingBlueIvanaContainer nowPlayingContainer;
-
-                response = await client.PostAsync(RadiosLinksDataConst.BlueIvana,
-                    new StringContent(JsonConvert.SerializeObject(new NowPlayingBlueIvanaConst()), Encoding.UTF8, "application/json"));
-                if (response.IsSuccessStatusCode)
-                {
-                    json = await response.Content.ReadAsStringAsync();
-                    json = ClearBlueIvanaString(json);
-                    nowPlayingContainer = JsonConvert.DeserializeObject<NowPlayingBlueIvanaContainer>(json);
-
-                    currentBlueIvanaPlayingSong = nowPlayingContainer.Artist + " - " + nowPlayingContainer.Title;
-
-                    if (currentBlueIvanaPlayingSong == string.Empty)
-                    {
-                        currentBlueIvanaPlayingSong = "I couldn't get song name";
-                    }
-                }
-                else
-                {
-                    currentBlueIvanaPlayingSong = "I couldn't get song name";
-                }
-            }
-            catch (Exception ie)
-            {
-                // Something went wrong
-                Console.WriteLine("Error: I couldn't get song name or error with Blue Ivana web site appeared or error with parsing.");
-                currentBlueIvanaPlayingSong = "I couldn't get song name";
-                Console.WriteLine("Exception: " + ie.Message);
-                Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
-                Console.WriteLine("Stack trace: " + ie.StackTrace);
-                using (var streamWriter = new StreamWriter("jsons.txt", true, Encoding.UTF8))
-                {
-                    streamWriter.WriteLine("Error: I couldn't get song name or error with Blue Ivana web site appeared or error with parsing.");
-                    streamWriter.WriteLine("Exception: " + ie.Message);
-                    streamWriter.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
-                    streamWriter.WriteLine("Stack trace: " + ie.StackTrace);
-                    streamWriter.WriteLine("JSON: " + json);
-                }
-            }
-        }
-
-        private async void GetBlueIvanaCookies()
-        {
-            HttpResponseMessage response;
-            try
-            {
-                var client = new HttpClient(httpClientHandler);
-
-                response = await client.PostAsync(RadiosLinksDataConst.BlueIvana,
-                    new StringContent(JsonConvert.SerializeObject(new NowPlayingBlueIvanaConst()), Encoding.UTF8, "application/json"));
-            }
-            catch (Exception ie)
-            {
-                // Something went wrong
-                Console.WriteLine("Error: I couldn't get cookies name or error with Blue Ivana web site appeared or error with parsing.");
-                Console.WriteLine("Exception: " + ie.Message);
-                Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
-                Console.WriteLine("Stack trace: " + ie.StackTrace);
-            }
-        }
-
-        private string ClearAnisonString(string input)
-        {
-            string temp = Regex.Replace(input, "<.*?>", String.Empty);
-            temp = temp.Replace("В эфире: ", String.Empty);
-            temp = temp.Replace("&#151;", "-");
-
-            return temp;
-        }
-
-        private string ClearBlueIvanaString(string input)
-        {
-            string temp = input.Replace("\\\"", "\"");
-            temp = temp.Remove(0, 1);
-            temp = temp.Remove(temp.Length - 1, 1);
-
-            return temp;
-        }
     }
 
     class EnabledChannel
