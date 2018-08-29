@@ -14,7 +14,7 @@ namespace OurIdolBot.Providers.MusicProviders
 {
     class AnisonProvider
     {
-        public static async Task<string> GetAnisonSongInfo()
+        public async Task<string> GetAnisonSongInfo()
         {
             string currentAnisonPlayingSong = "";
             string json = "";
@@ -61,7 +61,7 @@ namespace OurIdolBot.Providers.MusicProviders
             return currentAnisonPlayingSong;
         }
 
-        private static string ClearAnisonString(string input)
+        private string ClearAnisonString(string input)
         {
             string temp = Regex.Replace(input, "<.*?>", String.Empty);
             temp = temp.Replace("В эфире: ", String.Empty);

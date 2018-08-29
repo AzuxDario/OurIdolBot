@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace OurIdolBot.Providers.MusicProviders
 {
-    class JMusicProvicer
+    class JMusicProvider
     {
-        public static async Task<string> GetJMusicSongInfo()
+        public async Task<string> GetJMusicSongInfo()
         {
             string currentJMusicPlayingSong = "";
             string json = "";

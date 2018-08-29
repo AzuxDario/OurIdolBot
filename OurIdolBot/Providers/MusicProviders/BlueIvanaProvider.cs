@@ -13,7 +13,7 @@ namespace OurIdolBot.Providers.MusicProviders
 {
     class BlueIvanaProvider
     {
-        public static async Task<string> GetBlueIvanaSongInfo(HttpClientHandler httpClientHandler)
+        public async Task<string> GetBlueIvanaSongInfo(HttpClientHandler httpClientHandler)
         {
             string currentBlueIvanaPlayingSong = "";
             string json = "";
@@ -64,7 +64,7 @@ namespace OurIdolBot.Providers.MusicProviders
             return currentBlueIvanaPlayingSong;
         }
 
-        public static async void GetBlueIvanaCookies(HttpClientHandler httpClientHandler)
+        public async void GetBlueIvanaCookies(HttpClientHandler httpClientHandler)
         {
             HttpResponseMessage response;
             try
@@ -84,7 +84,7 @@ namespace OurIdolBot.Providers.MusicProviders
             }
         }
 
-        private static string ClearBlueIvanaString(string input)
+        private string ClearBlueIvanaString(string input)
         {
             string temp = input.Replace("\\\"", "\"");
             temp = temp.Remove(0, 1);

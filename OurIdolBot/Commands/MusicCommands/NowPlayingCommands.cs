@@ -29,6 +29,10 @@ namespace OurIdolBot.Commands.MusicCommands
         private Timer refreshCurrentSongTimer;
         private int refreshCurrentSongInterval;
 
+        private AnisonProvider anisonProvider;
+        private BlueIvanaProvider blueIvanaProvder;
+        private JMusicProvider jmusicProvider;
+
         public NowPlayingCommands()
         {
             refreshCurrentSongInterval = 1000 * 15;    // every 15 seconds
@@ -42,7 +46,7 @@ namespace OurIdolBot.Commands.MusicCommands
             httpClientHandler = new HttpClientHandler();
             httpClientHandler.CookieContainer = cookies;
 
-            BlueIvanaProvider.GetBlueIvanaCookies(httpClientHandler);
+            blueIvanaProvder.GetBlueIvanaCookies(httpClientHandler);
             GetSongInfo();
         }
 
@@ -211,9 +215,9 @@ namespace OurIdolBot.Commands.MusicCommands
 
         private async void GetSongInfo()
         {
-            currentAnisonPlayingSong = await AnisonProvider.GetAnisonSongInfo();
-            currentJMusicPlayingSong = await JMusicProvicer.GetJMusicSongInfo();
-            currentBlueIvanaPlayingSong = await BlueIvanaProvider.GetBlueIvanaSongInfo(httpClientHandler);
+            currentAnisonPlayingSong = await anisonProvider.GetAnisonSongInfo();
+            currentJMusicPlayingSong = await jmusicProvider.GetJMusicSongInfo();
+            currentBlueIvanaPlayingSong = await blueIvanaProvder.GetBlueIvanaSongInfo(httpClientHandler);
         }
 
     }
