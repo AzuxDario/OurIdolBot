@@ -1,5 +1,5 @@
 # Our Idol bot
-Simple Discord bot which can send  info about currently playing song by AnisonFM, J-Pop Project Radio and Blue Anime Ivana radios. The bot can shows info once or auto update it on chosen channel every 15 seconds. Bot also shows links to these radios.
+Simple Discord bot which can send  info about currently playing song by AnisonFM, J-Pop Project Radio,  Blue Anime Ivana, Anime NFO radios. The bot can shows info once or auto update it on chosen channel every 15 seconds. Bot also shows links to these radios.
 
 # Origin
 Bot was made by me for one of servers where I am. I was asked to write it because bot we use to play radios doesn't shows current song longer.

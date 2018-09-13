@@ -87,9 +87,10 @@
     <Compile Include="CustomHelpFormatter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Providers\MusicProviders\AnimeNFOProvider.cs" />
     <Compile Include="Providers\MusicProviders\AnisonProvider.cs" />
     <Compile Include="Providers\MusicProviders\BlueIvanaProvider.cs" />
-    <Compile Include="Providers\MusicProviders\JMusicProvicer.cs" />
+    <Compile Include="Providers\MusicProviders\JMusicProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

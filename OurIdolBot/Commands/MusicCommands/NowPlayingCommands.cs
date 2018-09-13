@@ -22,7 +22,8 @@ namespace OurIdolBot.Commands.MusicCommands
         private string currentAnisonPlayingSong;
         private string currentJMusicPlayingSong;
         private string currentBlueIvanaPlayingSong;
-        
+        private string currentAnimeNFOPlayingSong;
+
         CookieContainer cookies;
         HttpClientHandler httpClientHandler;
 
@@ -32,15 +33,22 @@ namespace OurIdolBot.Commands.MusicCommands
         private AnisonProvider anisonProvider;
         private BlueIvanaProvider blueIvanaProvder;
         private JMusicProvider jmusicProvider;
+        private AnimeNFOProvider animeNFOProvider;
 
         public NowPlayingCommands()
         {
+            anisonProvider = new AnisonProvider();
+            blueIvanaProvder = new BlueIvanaProvider();
+            jmusicProvider = new JMusicProvider();
+            animeNFOProvider = new AnimeNFOProvider();
+
             refreshCurrentSongInterval = 1000 * 15;    // every 15 seconds
             refreshCurrentSongTimer = new Timer(RefreshCurrentSongMessages, null, refreshCurrentSongInterval, Timeout.Infinite);
             enabledChannels = new List<EnabledChannel>();
             currentAnisonPlayingSong = "Waiting for first check...";
             currentJMusicPlayingSong = "Waiting for first check...";
             currentBlueIvanaPlayingSong = "Waiting for first check...";
+            currentAnimeNFOPlayingSong = "Waiting for first check...";
 
             cookies = new CookieContainer();
             httpClientHandler = new HttpClientHandler();
@@ -209,6 +217,7 @@ namespace OurIdolBot.Commands.MusicCommands
             embed.AddField("Current playing songs", "**Radio Anison FM**\n" + currentAnisonPlayingSong + "\n" + RadiosLinksConst.AnisonFm + 
                 "\n\n**Radio Blue Anime Ivana**\n" + currentBlueIvanaPlayingSong + "\n" + RadiosLinksConst.BlueIvana +
                 "\n\n**J-Pop Project Radio (JMusic)**\n" + currentJMusicPlayingSong + "\n" + RadiosLinksConst.JMusic +
+                "\n\n**Anime NFO Radio**\n" + currentAnimeNFOPlayingSong + "\n" + RadiosLinksConst.AnimeNFO +
                 "\n\nLast update: " + DateTime.UtcNow.ToString(@"HH:mm:ss") + " UTC");
             return embed;
         }
@@ -218,6 +227,7 @@ namespace OurIdolBot.Commands.MusicCommands
             currentAnisonPlayingSong = await anisonProvider.GetAnisonSongInfo();
             currentJMusicPlayingSong = await jmusicProvider.GetJMusicSongInfo();
             currentBlueIvanaPlayingSong = await blueIvanaProvder.GetBlueIvanaSongInfo(httpClientHandler);
+            currentAnimeNFOPlayingSong = await animeNFOProvider.GetAnimeNFOSongInfo();
         }
 
     }

@@ -5,5 +5,6 @@
         public static readonly string AnisonFm = "http://anison.fm/";
         public static readonly string JMusic = "https://www.j-popprojectradio.com/";
         public static readonly string BlueIvana = "http://blueanimeivana.playtheradio.com/";
+        public static readonly string AnimeNFO = "https://www.animenfo.com/radio/";
     }
 }
