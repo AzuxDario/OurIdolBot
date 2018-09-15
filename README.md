@@ -11,6 +11,7 @@ Feel free to add it to your server if you want.
   * $disableNowPlaying (alias: $disableNP) - Disable auto generated messages about current playing song.
   * $isEnabled - Shows whether auto generated messages are enabled on this channel.
   * $nowPlaying (alias: $np) - Check current playing song.
+  * $disableNowPlaying - Shows on how much channels idols updating information.
 ## Conversion
   * $kmToMiles - Convert kilometers to miles.
   * $milesToKm - Convert miles to kilometers.

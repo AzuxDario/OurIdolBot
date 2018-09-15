@@ -117,6 +117,13 @@ namespace OurIdolBot.Commands.MusicCommands
             }
         }
 
+        [Command("countUpdatingChannels")]
+        [Description("Shows on how much channels idols updating information.")]
+        public async Task CountUpdatingChannels(CommandContext ctx)
+        {
+            await ctx.RespondAsync("Number of channels: " + enabledChannels.Count);
+        }
+
         private async void RefreshCurrentSongMessages(object state)
         {
             //download current song
