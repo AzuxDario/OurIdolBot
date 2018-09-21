@@ -207,7 +207,6 @@ namespace OurIdolBot.Commands.MusicCommands
             }
             catch (Exception ie)
             {
-                await channel.discordChannel.SendMessageAsync("Something went wrong.");
                 Console.WriteLine("Error: Somehow I couldn't post current song info.");
                 Console.WriteLine("Exception: " + ie.Message);
                 Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
