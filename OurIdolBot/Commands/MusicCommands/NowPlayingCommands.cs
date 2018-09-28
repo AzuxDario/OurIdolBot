@@ -151,14 +151,15 @@ namespace OurIdolBot.Commands.MusicCommands
 
         private async void RepostSongInfo(EnabledChannel channel)
         {
-            // Try find last message
-            try
+              
+            // If last message exist
+            if (channel.lastMessage != null)
             {
-                var message = await channel.discordChannel.GetMessagesAsync(1);
-                // If last messgae exist
-                if (channel.lastMessage != null)
+                // Try find last message
+                try
                 {
-                    // If last message on channel is last message bot posted, edit it
+                    var message = await channel.discordChannel.GetMessagesAsync(1);
+                    // If last message on channel is the last message posted by bot, edit it
                     if (message.FirstOrDefault() == channel.lastMessage)
                     {
                         try
@@ -169,21 +170,21 @@ namespace OurIdolBot.Commands.MusicCommands
                         catch(Exception ie)
                         {
                             // Something went wrong
-                            Console.WriteLine("Error: Somehow I couldn't edit last my last message, even if it was last.");
+                            Console.WriteLine("Error: Edit last message failed.");
                             Console.WriteLine("Exception: " + ie.Message);
                             Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
                             Console.WriteLine("Stack trace: " + ie.StackTrace);
                         }              
                     }
                 }
-            }
-            catch (Exception ie)
-            {
-                // Something went wrong
-                Console.WriteLine("Error: Somehow I couldn't edit last my last message, even if it was last or I haven't post last message yet.");
-                Console.WriteLine("Exception: " + ie.Message);
-                Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
-                Console.WriteLine("Stack trace: " + ie.StackTrace);
+                catch (Exception ie)
+                {
+                    // Something went wrong
+                    Console.WriteLine("Error: Get last message from channel failed.");
+                    Console.WriteLine("Exception: " + ie.Message);
+                    Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
+                    Console.WriteLine("Stack trace: " + ie.StackTrace);
+                }
             }
             // Try delete last message
             try
@@ -196,7 +197,7 @@ namespace OurIdolBot.Commands.MusicCommands
             catch (Exception ie)
             {
                 //Bot couldn't find message. Maybe someone deleted it.
-                Console.WriteLine("Error: Somehow I couldn't find message. Maybe someone deleted it.");
+                Console.WriteLine("Error: Delete bot's last message failed. Message might be already deleted by someone else.");
                 Console.WriteLine("Exception: " + ie.Message);
                 Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
                 Console.WriteLine("Stack trace: " + ie.StackTrace);
@@ -207,7 +208,7 @@ namespace OurIdolBot.Commands.MusicCommands
             }
             catch (Exception ie)
             {
-                Console.WriteLine("Error: Somehow I couldn't post current song info.");
+                Console.WriteLine("Error: Send music info failed.");
                 Console.WriteLine("Exception: " + ie.Message);
                 Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
                 Console.WriteLine("Stack trace: " + ie.StackTrace);
