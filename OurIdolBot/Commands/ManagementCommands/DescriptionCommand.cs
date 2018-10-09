@@ -36,7 +36,17 @@ namespace OurIdolBot.Commands.ManagementCommands
             {
                 game = description;
 
-                await ctx.Client.UpdateStatusAsync(new DiscordGame(description));
+                try
+                {
+                    await ctx.Client.UpdateStatusAsync(new DiscordGame(description));
+                }
+                catch (Exception ie)
+                {
+                    Console.WriteLine("Error: Can't set status.");
+                    Console.WriteLine("Exception: " + ie.Message);
+                    Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
+                    Console.WriteLine("Stack trace: " + ie.StackTrace);
+                }
             }
         }
 
@@ -44,7 +54,17 @@ namespace OurIdolBot.Commands.ManagementCommands
         {
             if (game != string.Empty)
             {
-                Bot.DiscordClient.UpdateStatusAsync(new DiscordGame(game));
+                try
+                {
+                    Bot.DiscordClient.UpdateStatusAsync(new DiscordGame(game));
+                }
+                catch (Exception ie)
+                {
+                    Console.WriteLine("Error: Can't update status.");
+                    Console.WriteLine("Exception: " + ie.Message);
+                    Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
+                    Console.WriteLine("Stack trace: " + ie.StackTrace);
+                }
             }
 
             refreshDescriptionTimer.Change(refreshDescriptionInterval, Timeout.Infinite);
