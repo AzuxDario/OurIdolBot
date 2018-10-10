@@ -6,7 +6,7 @@ using OurIdolBot.Attributes;
 namespace OurIdolBot.Commands.OtherCommands
 {
     [CommandsGroup("Management")]
-    public class PingCommand
+    public class PingCommand : BaseCommandModule
     {
         [Command("ping")]
         [Description("Show ping.")]

@@ -33,7 +33,7 @@ namespace OurIdolBot.Core
 
 
         public static DiscordClient DiscordClient { get; set; }
-        private CommandsNextModule _commands { get; set; }
+        private CommandsNextExtension _commands { get; set; }
         public static ConfigJson configJson { get; private set; }
 
         public void Run()
@@ -65,21 +65,19 @@ namespace OurIdolBot.Core
                 AutoReconnect = true,
                 LogLevel = LogLevel.Debug,
                 UseInternalLogHandler = true
+
+#if DEBUG
+                ,
+                // For Windows 7 I'm using to test
+                WebSocketClientFactory = WebSocket4NetCoreClient.CreateNew
+#endif
             };
 
             DiscordClient = new DiscordClient(connectionConfig);
 
-#if DEBUG
-            // For Windows 7 I'm using to test
-            DiscordClient.SetWebSocketClient<WebSocket4NetClient>();
-#else
-            // For Mono I'm using to release
-            DiscordClient.SetWebSocketClient<WebSocketSharpClient>();
-#endif
-
             var commandsConfig = new CommandsNextConfiguration
             {
-                StringPrefix = configJson.CommandPrefix,
+                StringPrefixes = new[] { configJson.CommandPrefix },
                 EnableDms = true,
                 EnableMentionPrefix = true,
                 CaseSensitive = false
@@ -96,8 +94,7 @@ namespace OurIdolBot.Core
 
         private void SetNetworkParameters()
         {
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 |
-                                                   SecurityProtocolType.Tls12;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
         }
 
         private void RegisterCommands()

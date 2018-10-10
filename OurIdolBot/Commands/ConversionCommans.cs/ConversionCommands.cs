@@ -11,7 +11,7 @@ using System.Globalization;
 namespace OurIdolBot.Commands.ConversionCommans.cs
 {
     [CommandsGroup("Conversion")]
-    class ConversionCommands
+    class ConversionCommands : BaseCommandModule
     {
         [Command("kmToMiles")]
         [Description("Convert kilometers to miles.")]

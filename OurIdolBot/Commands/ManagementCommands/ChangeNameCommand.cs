@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace OurIdolBot.Commands.ManagementCommands
 {
     [CommandsGroup("Management")]
-    class ChangeNameCommand
+    class ChangeNameCommand : BaseCommandModule
     {
         [Command("changeName")]
         [Description("Change bot descrition.")]
@@ -19,7 +19,7 @@ namespace OurIdolBot.Commands.ManagementCommands
         {
             if (ctx.Member.Id == Bot.configJson.Developer)
             {
-                await Bot.DiscordClient.EditCurrentUserAsync(name);
+                await Bot.DiscordClient.UpdateCurrentUserAsync(name);
             }
         }
     }

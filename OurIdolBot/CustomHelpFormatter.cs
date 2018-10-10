@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace OurIdolBot
 {
-    class CustomHelpFormatter : IHelpFormatter
+    class CustomHelpFormatter : BaseHelpFormatter
     {
         private string _commandName;
         private string _commandDescription;
@@ -23,46 +23,35 @@ namespace OurIdolBot
 
         private const string Color = "#5588EE";
 
-        public CustomHelpFormatter()
+        public CustomHelpFormatter(CommandContext ctx) : base(ctx)
         {
             _aliases = new List<string>();
             _parameters = new List<string>();
             _subCommands = new Dictionary<string, List<string>>();
         }
 
-        public IHelpFormatter WithCommandName(string name)
+        public override BaseHelpFormatter WithCommand(Command command)
         {
-            _commandName = name;
-            return this;
-        }
+            _commandName = command.Name;
+            _commandDescription = command.Description;
 
-        public IHelpFormatter WithDescription(string description)
-        {
-            _commandDescription = description;
-            return this;
-        }
-
-        public IHelpFormatter WithArguments(IEnumerable<CommandArgument> arguments)
-        {
-            foreach (var argument in arguments)
+            if (command.Overloads.Count > 0)
             {
-                var argumentBuilder = new StringBuilder();
-                argumentBuilder.Append($"`{argument.Name}`: {argument.Description}");
-
-                if (argument.DefaultValue != null)
+                foreach (var argument in command.Overloads[0].Arguments)
                 {
-                    argumentBuilder.Append($" Default value: {argument.DefaultValue}");
-                }
+                    var argumentBuilder = new StringBuilder();
+                    argumentBuilder.Append($"`{argument.Name}`: {argument.Description}");
 
-                _parameters.Add(argumentBuilder.ToString());
+                    if (argument.DefaultValue != null)
+                    {
+                        argumentBuilder.Append($" Default value: {argument.DefaultValue}");
+                    }
+
+                    _parameters.Add(argumentBuilder.ToString());
+                }
             }
 
-            return this;
-        }
-
-        public IHelpFormatter WithAliases(IEnumerable<string> aliases)
-        {
-            foreach (var alias in aliases)
+            foreach (var alias in command.Aliases)
             {
                 _aliases.Add($"`{alias}`");
             }
@@ -70,7 +59,7 @@ namespace OurIdolBot
             return this;
         }
 
-        public IHelpFormatter WithSubcommands(IEnumerable<Command> subcommands)
+        public override BaseHelpFormatter WithSubcommands(IEnumerable<Command> subcommands)
         {
             var assembly = Assembly.GetExecutingAssembly();
             var assemblyTypes = assembly.GetTypes();
@@ -108,12 +97,7 @@ namespace OurIdolBot
             return this;
         }
 
-        public IHelpFormatter WithGroupExecutable()
-        {
-            return this;
-        }
-
-        public CommandHelpMessage Build()
+        public override CommandHelpMessage Build()
         {
             var embed = new DiscordEmbedBuilder
             {

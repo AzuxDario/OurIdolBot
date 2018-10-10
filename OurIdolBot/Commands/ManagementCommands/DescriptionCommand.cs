@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace OurIdolBot.Commands.ManagementCommands
 {
     [CommandsGroup("Management")]
-    class DescriptionCommand
+    class DescriptionCommand : BaseCommandModule
     {
         private Timer refreshDescriptionTimer;
         private int refreshDescriptionInterval;
@@ -38,7 +38,7 @@ namespace OurIdolBot.Commands.ManagementCommands
 
                 try
                 {
-                    await ctx.Client.UpdateStatusAsync(new DiscordGame(description));
+                    await ctx.Client.UpdateStatusAsync(new DiscordActivity(description));
                 }
                 catch (Exception ie)
                 {
@@ -56,7 +56,7 @@ namespace OurIdolBot.Commands.ManagementCommands
             {
                 try
                 {
-                    Bot.DiscordClient.UpdateStatusAsync(new DiscordGame(game));
+                    Bot.DiscordClient.UpdateStatusAsync(new DiscordActivity(game));
                 }
                 catch (Exception ie)
                 {

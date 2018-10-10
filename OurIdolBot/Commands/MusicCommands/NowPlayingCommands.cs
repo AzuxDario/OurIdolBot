@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace OurIdolBot.Commands.MusicCommands
 {
     [CommandsGroup("Music")]
-    class NowPlayingCommands
+    class NowPlayingCommands : BaseCommandModule
     {
         
         private List<EnabledChannel> enabledChannels;
@@ -126,15 +126,22 @@ namespace OurIdolBot.Commands.MusicCommands
 
         private async void RefreshCurrentSongMessages(object state)
         {
-            //download current song
-            GetSongInfo();
-            // If we have at least one channel repost current song
-            if (enabledChannels.Count > 0)
+            try
             {
-                foreach (var channel in enabledChannels)
+                //download current song
+                GetSongInfo();
+                // If we have at least one channel repost current song
+                if (enabledChannels.Count > 0)
                 {
-                    RepostSongInfo(channel);
+                    foreach (var channel in enabledChannels)
+                    {
+                        RepostSongInfo(channel);
+                    }
                 }
+            }
+            catch (Exception ie)
+            {
+
             }
 
             refreshCurrentSongTimer.Change(refreshCurrentSongInterval, Timeout.Infinite);
