@@ -60,7 +60,7 @@ namespace OurIdolBot.Providers.MusicProviders
 
         private string ClearAnimeNFOString(string input)
         {
-            Regex regex = new Regex("Current Song: </font></td><td><font class=default><b>(.*)</b></td></tr></table>");
+            Regex regex = new Regex("<td>Playing Now: </td><td><b><a href=\"currentsong\\?sid=1\">(.*)</a></b></td>");
             Match match = regex.Match(input);
             if (match.Success)
             {
