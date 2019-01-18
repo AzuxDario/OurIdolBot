@@ -11,12 +11,31 @@ Feel free to add it to your server if you want.
   * $disableNowPlaying (alias: $disableNP) - Disable auto generated messages about current playing song.
   * $isEnabled - Shows whether auto generated messages are enabled on this channel.
   * $nowPlaying (alias: $np) - Check current playing song.
-  * $disableNowPlaying - Shows on how much channels idols updating information.
+  * $countUpdatingChannels - Shows on how much channels idols updating information.
 ## Conversion
   * $kmToMiles - Convert kilometers to miles.
   * $milesToKm - Convert miles to kilometers.
   * $cToF - Convert Celsius to Fahrenheit.
   * $fToC - Convert Fahrenheit to Celsius.
+## Images
+  * $8ball
+  * $avatar
+  * $baka
+  * $catgirl
+  * $cuddle
+  * $feed
+  * $hug
+  * $inu
+  * $kiss
+  * $kitsune
+  * $lizard
+  * $neko
+  * $pat
+  * $poke
+  * $slap
+  * $smug
+  * $tickle
+  * $wallpaper
 ## Help
   * $help - Shows help.
   * $help command - Shows help about specific command.
@@ -24,7 +43,7 @@ Feel free to add it to your server if you want.
   * $ping - Check ping
  
 # Invitation link
- https://discordapp.com/oauth2/authorize?&client_id=446754812177022998&scope=bot&permissions=0
+ https://discordapp.com/oauth2/authorize?&client_id=446754812177022998&scope=bot&permissions=68608
 
 # Used libraries
   * [DSharpPlus](https://github.com/DSharpPlus/DSharpPlus)
