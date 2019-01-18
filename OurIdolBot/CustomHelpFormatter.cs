@@ -4,6 +4,7 @@ using DSharpPlus.CommandsNext.Converters;
 using DSharpPlus.CommandsNext.Entities;
 using DSharpPlus.Entities;
 using OurIdolBot.Attributes;
+using OurIdolBot.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -109,7 +110,7 @@ namespace OurIdolBot
 
         private CommandHelpMessage BuildGeneralHelp(DiscordEmbedBuilder embed)
         {
-            embed.AddField("HELP", "Write !help <command_name> for more information.");
+            embed.AddField("HELP", "Write " + Bot.configJson.CommandPrefix +"help <command_name> for more information.");
 
             var orderedSubCommands = _subCommands.OrderBy(p => p.Key).ToList();
             foreach (var group in orderedSubCommands)
