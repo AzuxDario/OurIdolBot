@@ -19,7 +19,6 @@ Feel free to add it to your server if you want.
   * $fToC - Convert Fahrenheit to Celsius.
 ## Images
   * $8ball
-  * $avatar
   * $baka
   * $catgirl
   * $cuddle
@@ -31,6 +30,7 @@ Feel free to add it to your server if you want.
   * $lizard
   * $neko
   * $pat
+  * $pfp
   * $poke
   * $slap
   * $smug

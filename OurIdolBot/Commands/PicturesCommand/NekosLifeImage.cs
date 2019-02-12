@@ -86,11 +86,11 @@ namespace OurIdolBot.Commands.PicturesCommand
             await ctx.TriggerTypingAsync();
             await SendImage(ctx, NekosLifePicturesEndpoints.Slap, "Slap", member);
         }
-        [Command("avatar")]
+        [Command("pfp")]
         public async Task Avatar(CommandContext ctx, [Description("Mention")] DiscordMember member = null)
         {
             await ctx.TriggerTypingAsync();
-            await SendImage(ctx, NekosLifePicturesEndpoints.Avatar, "Avatar", member);
+            await SendImage(ctx, NekosLifePicturesEndpoints.Avatar, "Pfp", member);
         }
         [Command("kitsune")]
         [Aliases("foxgirl")]
