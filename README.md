@@ -17,6 +17,12 @@ Feel free to add it to your server if you want.
   * $milesToKm - Convert miles to kilometers.
   * $cToF - Convert Celsius to Fahrenheit.
   * $fToC - Convert Fahrenheit to Celsius.
+## Roles
+  * $showRoles - Shows the roles that you can assign yourself on server.
+  * $assignRole - Assign role to you from the role list.
+  * $removeRole - Remove role from you from the role list.
+  * $addRole - Adds a role to the role list that server members can assign.
+  * $deleteRole - Removes a role from the role list that can be assigned by server members.
 ## Images
   * $8ball - random 8ball images
   * $avatar - Shows avatar of user.

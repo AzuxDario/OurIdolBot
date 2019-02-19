@@ -244,3 +244,4 @@ ModelManifest.xml
 
 /OurIdolBot/debug.json
 /OurIdolBot/release.json
+OurIdolBot/DynamicDatabase.sqlite
