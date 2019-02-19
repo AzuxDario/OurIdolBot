@@ -18,24 +18,25 @@ Feel free to add it to your server if you want.
   * $cToF - Convert Celsius to Fahrenheit.
   * $fToC - Convert Fahrenheit to Celsius.
 ## Images
-  * $8ball
-  * $baka
-  * $catgirl
-  * $cuddle
-  * $feed
-  * $hug
-  * $inu
-  * $kiss
-  * $kitsune
-  * $lizard
-  * $neko
-  * $pat
-  * $pfp
-  * $poke
-  * $slap
-  * $smug
-  * $tickle
-  * $wallpaper
+  * $8ball - random 8ball images
+  * $avatar - Shows avatar of user.
+  * $baka - random baka images
+  * $catgirl - random catgirl images
+  * $cuddle - random cuddle images
+  * $feed - random feed images
+  * $hug - random hug images
+  * $inu - random inu images
+  * $kiss - random kiss images
+  * $kitsune - random kitsune images
+  * $lizard - random lizard images
+  * $neko - random neko images
+  * $pat - random pat images
+  * $pfp - random pfp images
+  * $poke - random poke images
+  * $slap - random slap images
+  * $smug - random smug images
+  * $tickle - random tickle images
+  * $wallpaper - random wallpaper images
 ## Help
   * $help - Shows help.
   * $help command - Shows help about specific command.
