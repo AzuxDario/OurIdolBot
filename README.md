@@ -50,7 +50,7 @@ Feel free to add it to your server if you want.
   * $ping - Check ping
  
 # Invitation link
- https://discordapp.com/oauth2/authorize?&client_id=446754812177022998&scope=bot&permissions=68608
+ https://discordapp.com/oauth2/authorize?&client_id=446754812177022998&scope=bot&permissions=268504064
 
 # Used libraries
   * [DSharpPlus](https://github.com/DSharpPlus/DSharpPlus)
