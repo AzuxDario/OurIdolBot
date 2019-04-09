@@ -1,5 +1,6 @@
 ﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.Exceptions;
 using DSharpPlus.Net.WebSocket;
 using Newtonsoft.Json;
 using OurIdolBot.Attributes;
@@ -126,6 +127,20 @@ namespace OurIdolBot.Core
         private async Task Commands_CommandErrored(CommandErrorEventArgs e)
         {
             e.Context.Client.DebugLogger.LogMessage(LogLevel.Error, "ExampleBot", $"{e.Context.User.Username} tried executing '{e.Command?.QualifiedName ?? "<unknown command>"}' but it errored: {e.Exception.GetType()}: {e.Exception.Message ?? "<no message>"}", DateTime.Now);
+
+            switch (e.Exception)
+            {
+                case UnauthorizedException _:
+                    {
+                        await e.Context.Member.SendMessageAsync("Sorry, I don't have enough permissions to send messsages there.");
+                        break;
+                    }
+
+                default:
+                    {
+                        break;
+                    }
+            }
         }
 
 
