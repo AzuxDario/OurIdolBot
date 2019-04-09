@@ -132,7 +132,7 @@ namespace OurIdolBot.Core
             {
                 case UnauthorizedException _:
                     {
-                        await e.Context.Member.SendMessageAsync("Sorry, I don't have enough permissions to send messsages there.");
+                        await e.Context.Member.SendMessageAsync("Sorry, I don't have enough permissions to send messages there.");
                         break;
                     }
 
