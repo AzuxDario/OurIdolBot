@@ -160,8 +160,8 @@ namespace OurIdolBot.Commands.RolesCommands
                             // User who triggered is owner, we can add role without problem
                             if (ctx.User == ctx.Guild.Owner)
                             {
-                                await ctx.Member.RevokeRoleAsync(serverRole, "Role has been reomved by bot using assign role system. Action has been triggered by user.");
-                                await ctx.RespondAsync("Role has been reomved.");
+                                await ctx.Member.RevokeRoleAsync(serverRole, "Role has been removed by bot using assign role system. Action has been triggered by user.");
+                                await ctx.RespondAsync("Role has been removed.");
                             }
                             // User who triggered isn't owner, we need to check if role is lower than the highest role he has
                             else
@@ -170,8 +170,8 @@ namespace OurIdolBot.Commands.RolesCommands
                                 // Role is lower than the highest role user has
                                 if (serverRole.Position < userTheHighestRolePosition)
                                 {
-                                    await ctx.Member.RevokeRoleAsync(serverRole, "Role has been reomved by bot using assign role system. Action has been triggered by user.");
-                                    await ctx.RespondAsync("Role has been reomved.");
+                                    await ctx.Member.RevokeRoleAsync(serverRole, "Role has been removed by bot using assign role system. Action has been triggered by user.");
+                                    await ctx.RespondAsync("Role has been removed.");
                                 }
                                 // Role is the highest role user has
                                 else
