@@ -1,5 +1,6 @@
 ﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.CommandsNext.Exceptions;
 using DSharpPlus.Exceptions;
 using DSharpPlus.Net.WebSocket;
 using Newtonsoft.Json;
@@ -130,12 +131,17 @@ namespace OurIdolBot.Core
 
             switch (e.Exception)
             {
-                case UnauthorizedException _:
+                case Checks​Failed​Exception _:
                     {
-                        await e.Context.Member.SendMessageAsync("Sorry, I don't have enough permissions to send messages there.");
+                        await e.Context.Channel.SendMessageAsync("Sorry, I or you don't have enough permissions to perform this action.");
                         break;
                     }
-
+                case UnauthorizedException _:
+                    {
+                        await e.Context.Member.SendMessageAsync("Sorry, I don't have enough permissions to perform this action.");
+                        break;
+                    }
+                
                 default:
                     {
                         break;
