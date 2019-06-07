@@ -56,3 +56,10 @@ Feel free to add it to your server if you want.
   * [DSharpPlus](https://github.com/DSharpPlus/DSharpPlus)
   * [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
   * [WebSocket4Net](https://github.com/kerryjiang/WebSocket4Net)
+
+# Running
+If you want to run this bot you need to do following steps.
+## API keys
+You need to create in main directory 2 files 'release.json' and 'debug.json', using 'config.example.json' as template. These files are used to run and in release and debug mode respectively. They contains Discord Bot token, id of creator, and prefix for commands.
+## Database
+You need to create in main directory file called 'DynamicDatabase.sqlite' using 'DynamicDatabase.example.sqlite' as template.
