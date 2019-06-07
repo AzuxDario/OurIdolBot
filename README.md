@@ -60,6 +60,6 @@ Feel free to add it to your server if you want.
 # Running
 If you want to run this bot you need to do following steps.
 ## API keys
-You need to create in main directory 2 files 'release.json' and 'debug.json', using 'config.example.json' as template. These files are used to run and in release and debug mode respectively. They contains Discord Bot token, id of creator, and prefix for commands.
+You need to create 2 files 'release.json' and 'debug.json' in main directory, using 'config.example.json' as template. These files are used to run in release and debug mode respectively. They contains Discord Bot token, id of creator, and prefix for commands.
 ## Database
-You need to create in main directory file called 'DynamicDatabase.sqlite' using 'DynamicDatabase.example.sqlite' as template.
+You need to create file called 'DynamicDatabase.sqlite' in main directory, using 'DynamicDatabase.example.sqlite' as template.
