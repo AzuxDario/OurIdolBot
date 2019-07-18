@@ -6,9 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00618" />
-    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00618" />
-    <PackageReference Include="DSharpPlus.WebSocket.WebSocket4NetCore" Version="4.0.0-nightly-00618" />
+    <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00614" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00614" />
+    <PackageReference Include="DSharpPlus.WebSocket.WebSocket4NetCore" Version="4.0.0-nightly-00614" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.2" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
