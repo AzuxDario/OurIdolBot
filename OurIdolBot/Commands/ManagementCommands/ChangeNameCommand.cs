@@ -15,7 +15,7 @@ namespace OurIdolBot.Commands.ManagementCommands
     {
         [Command("changeName")]
         [Description("Change bot descrition.")]
-        public async Task ChangeName(CommandContext ctx, [Description("New name.")] string name = null)
+        public async Task ChangeName(CommandContext ctx, [Description("New name.")] [RemainingText] string name)
         {
             if (ctx.Member.Id == Bot.configJson.Developer)
             {
