@@ -71,7 +71,7 @@ namespace OurIdolBot.Commands.RolesCommands
         [Description("Assign role to you from the role list.")]
         [RequireBotPermissions(DSharpPlus.Permissions.ManageRoles)]
         [RequireUserPermissions(DSharpPlus.Permissions.None)]
-        public async Task AssignRole(CommandContext ctx, params string[] message)
+        public async Task AssignRole(CommandContext ctx, [RemainingText] string message)
         {
             await ctx.TriggerTypingAsync();
 
@@ -83,7 +83,7 @@ namespace OurIdolBot.Commands.RolesCommands
 
                 foreach (var serverRole in serverRoles)
                 {
-                    if (serverRole.Value.Name == ctx.RawArgumentString)
+                    if (serverRole.Value.Name == message)
                     {
                         // Check if role is already in database
                         if (IsRoleInDatabase(dbServer, serverRole.Value.Id))
@@ -132,7 +132,7 @@ namespace OurIdolBot.Commands.RolesCommands
         [Description("Remove role from you from the role list.")]
         [RequireBotPermissions(DSharpPlus.Permissions.ManageRoles)]
         [RequireUserPermissions(DSharpPlus.Permissions.None)]
-        public async Task RemoveRole(CommandContext ctx, params string[] message)
+        public async Task RemoveRole(CommandContext ctx, [RemainingText] string message)
         {
             await ctx.TriggerTypingAsync();
 
@@ -144,7 +144,7 @@ namespace OurIdolBot.Commands.RolesCommands
 
                 foreach (var serverRole in serverRoles)
                 {
-                    if (serverRole.Value.Name == ctx.RawArgumentString)
+                    if (serverRole.Value.Name == message)
                     {
                         // Check if role is already in database
                         if (IsRoleInDatabase(dbServer, serverRole.Value.Id))
@@ -193,7 +193,7 @@ namespace OurIdolBot.Commands.RolesCommands
         [Description("Adds a role to the role list that server members can assign.")]
         [RequireBotPermissions(DSharpPlus.Permissions.ManageRoles)]
         [RequireUserPermissions(DSharpPlus.Permissions.ManageRoles)]
-        public async Task AddRole(CommandContext ctx, params string[] message)
+        public async Task AddRole(CommandContext ctx, [RemainingText] string message)
         {
             await ctx.TriggerTypingAsync();
 
@@ -206,7 +206,7 @@ namespace OurIdolBot.Commands.RolesCommands
 
                 foreach (var serverRole in serverRoles)
                 {
-                    if (serverRole.Value.Name == ctx.RawArgumentString)
+                    if (serverRole.Value.Name == message)
                     {
                         // Check if role is already in database
                         if (IsRoleInDatabase(dbServer, serverRole.Value.Id))
@@ -256,7 +256,7 @@ namespace OurIdolBot.Commands.RolesCommands
         [Description("Removes a role from the role list that can be assigned by server members.")]
         [RequireBotPermissions(DSharpPlus.Permissions.ManageRoles)]
         [RequireUserPermissions(DSharpPlus.Permissions.ManageRoles)]
-        public async Task DeleteRole(CommandContext ctx, params string[] message)
+        public async Task DeleteRole(CommandContext ctx, [RemainingText] string message)
         {
             await ctx.TriggerTypingAsync();
 
@@ -269,7 +269,7 @@ namespace OurIdolBot.Commands.RolesCommands
 
                 foreach (var serverRole in serverRoles)
                 {
-                    if (serverRole.Value.Name == ctx.RawArgumentString)
+                    if (serverRole.Value.Name == message)
                     {
 
                         // Check if role is already in database

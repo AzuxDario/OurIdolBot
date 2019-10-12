@@ -30,7 +30,7 @@ namespace OurIdolBot.Commands.ManagementCommands
 
         [Command("description")]
         [Description("Change bot descrition.")]
-        public async Task Description(CommandContext ctx, [Description("New description.")] string description = null)
+        public async Task Description(CommandContext ctx, [Description("New description.")] [RemainingText] string description)
         {
             if (ctx.Member.Id == Bot.configJson.Developer)
             {
