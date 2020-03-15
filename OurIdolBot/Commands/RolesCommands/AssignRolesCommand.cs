@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using OurIdolBot.Attributes;
 using OurIdolBot.Database.Models;
 using OurIdolBot.Database.Models.DynamicDB;
+using OurIdolBot.Services.RolesServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,56 +15,43 @@ using System.Threading.Tasks;
 namespace OurIdolBot.Commands.RolesCommands
 {
     [CommandsGroup("Roles")]
-    class AssignRolesCommand : BaseCommandModule
+    public class AssignRolesCommand : BaseCommandModule
     {
+        private readonly AssignRolesService _assignRolesService;
+
+        public AssignRolesCommand(AssignRolesService assignRolesService)
+        {
+            _assignRolesService = assignRolesService;
+        }
+
         [Command("showRoles")]
         [Description("Shows the roles that you can assign yourself on this server.")]
         public async Task ShowRoles(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-
-            using (var databaseContext = new DynamicDBContext())
+            var message = _assignRolesService.ShowRoles(ctx.Guild.Id, ctx.Guild.Roles);
+            StringBuilder messagePart = new StringBuilder();
+            for(int i = 0; i < message.Count; i++)
             {
-                Server dbServer = GetServerFromDatabase(databaseContext, ctx.Guild.Id);
-
-                // If there's no roles, send message and exit.
-                if (dbServer.AssignRoles.Count == 0)
+                if(messagePart.Length > 1800)
                 {
-                    await ctx.RespondAsync("There are no roles on this server that you can assign.");
-                    return;
-                }
-                // Prepare message.
-                string message = "**The roles available on the server are:**\n";
-                // Get server roles.
-                var serverRoles = ctx.Guild.Roles;
-
-                List<DiscordRole> discordRoles = new List<DiscordRole>();
-                foreach (AssignRole assignRole in dbServer.AssignRoles)
-                {
-                    discordRoles.Add(serverRoles.Where(p => p.Value.Id.ToString() == assignRole.RoleID).FirstOrDefault().Value);
+                    await ctx.RespondAsync(messagePart.ToString());
+                    messagePart.Clear(); ;
                 }
 
-                List<DiscordRole> sortedRoles = discordRoles.OrderBy(o => o.Name).ToList();
-                foreach (DiscordRole sortedRole in sortedRoles)
+                if(i == 0 || i == 1)
                 {
-                    if (sortedRole != null)
-                    {
-                        if (sortedRole != sortedRoles[0])
-                        {
-                            message += ", ";
-                        }
-                        message += sortedRole.Name;
-                    }
-                    if (message.Length > 1800)
-                    {
-                        await ctx.RespondAsync(message);
-                        message = "";
-                    }
+                    messagePart.Append(message[i]);
                 }
-                if (message.Length > 0)
+                else
                 {
-                    await ctx.RespondAsync(message);
+                    messagePart.Append(", ");
+                    messagePart.Append(message[i]);
                 }
+            }
+            if (messagePart.Length > 0)
+            {
+                await ctx.RespondAsync(messagePart.ToString());
             }
         }
 
@@ -74,58 +62,12 @@ namespace OurIdolBot.Commands.RolesCommands
         public async Task AssignRole(CommandContext ctx, [RemainingText] string message)
         {
             await ctx.TriggerTypingAsync();
-
-            using (var databaseContext = new DynamicDBContext())
+            var result = _assignRolesService.AssignRole(ctx.Guild.Id, ctx.Guild.Roles, ctx.Member, message);
+            await ctx.RespondAsync(result.Item1);
+            if(result.Item2 != null)
             {
-                Server dbServer = GetServerFromDatabase(databaseContext, ctx.Guild.Id);
-
-                var serverRoles = ctx.Guild.Roles;
-
-                foreach (var serverRole in serverRoles)
-                {
-                    if (serverRole.Value.Name == message)
-                    {
-                        // Check if role is already in database
-                        if (IsRoleInDatabase(dbServer, serverRole.Value.Id))
-                        {
-                            // Check if user already has this role
-                            if (HasUserRole(ctx.Member, serverRole.Value))
-                            {
-                                await ctx.RespondAsync("You already have this role.");
-                                return;
-                            }
-
-                            // User who triggered is owner, we can add role without problem
-                            if (ctx.User == ctx.Guild.Owner)
-                            {
-                                await ctx.Member.GrantRoleAsync(serverRole.Value, "Role has been assigned by bot using assign role system. Action has been triggered by user.");
-                                await ctx.RespondAsync("Role has been assigned.");
-                            }
-                            // User who triggered isn't owner, we need to check if role is lower than the highest role he has
-                            else
-                            {
-                                var userTheHighestRolePosition = GetTheHighestRolePosition(ctx.Member.Roles.ToList());
-                                // Role is lower than the highest role user has
-                                if (serverRole.Value.Position < userTheHighestRolePosition)
-                                {
-                                    await ctx.Member.GrantRoleAsync(serverRole.Value, "Role has been assigned by bot using assign role system. Action has been triggered by user.");
-                                    await ctx.RespondAsync("Role has been assigned.");
-                                }
-                                // Role is equal or higher than the highest role user has
-                                else
-                                {
-                                    await ctx.RespondAsync("You can not give yourself this role because it is equal or higher than your highest role.");
-                                }
-
-                            }
-                            return;
-                        }
-
-                    }
-                }
-                await ctx.RespondAsync("Role is not on the list.");
+                await ctx.Member.GrantRoleAsync(result.Item2, "Role has been assigned by bot using assign role system. Action has been triggered by user.");
             }
-
         }
 
         [Command("removeRole")]
@@ -135,58 +77,12 @@ namespace OurIdolBot.Commands.RolesCommands
         public async Task RemoveRole(CommandContext ctx, [RemainingText] string message)
         {
             await ctx.TriggerTypingAsync();
-
-            using (var databaseContext = new DynamicDBContext())
+            var result = _assignRolesService.RemoveRole(ctx.Guild.Id, ctx.Guild.Roles, ctx.Member, message);
+            await ctx.RespondAsync(result.Item1);
+            if (result.Item2 != null)
             {
-                Server dbServer = GetServerFromDatabase(databaseContext, ctx.Guild.Id);
-
-                var serverRoles = ctx.Guild.Roles;
-
-                foreach (var serverRole in serverRoles)
-                {
-                    if (serverRole.Value.Name == message)
-                    {
-                        // Check if role is already in database
-                        if (IsRoleInDatabase(dbServer, serverRole.Value.Id))
-                        {
-                            // Check if user already has this role
-                            if (!HasUserRole(ctx.Member, serverRole.Value))
-                            {
-                                await ctx.RespondAsync("You do not have this role.");
-                                return;
-                            }
-
-                            // User who triggered is owner, we can add role without problem
-                            if (ctx.User == ctx.Guild.Owner)
-                            {
-                                await ctx.Member.RevokeRoleAsync(serverRole.Value, "Role has been removed by bot using assign role system. Action has been triggered by user.");
-                                await ctx.RespondAsync("Role has been removed.");
-                            }
-                            // User who triggered isn't owner, we need to check if role is lower than the highest role he has
-                            else
-                            {
-                                var userTheHighestRolePosition = GetTheHighestRolePosition(ctx.Member.Roles.ToList());
-                                // Role is lower than the highest role user has
-                                if (serverRole.Value.Position < userTheHighestRolePosition)
-                                {
-                                    await ctx.Member.RevokeRoleAsync(serverRole.Value, "Role has been removed by bot using assign role system. Action has been triggered by user.");
-                                    await ctx.RespondAsync("Role has been removed.");
-                                }
-                                // Role is the highest role user has
-                                else
-                                {
-                                    await ctx.RespondAsync("You can not remove this role because it's your highest role.");
-                                }
-
-                            }
-                            return;
-                        }
-
-                    }
-                }
-                await ctx.RespondAsync("Role is not on the list.");
+                await ctx.Member.GrantRoleAsync(result.Item2, "Role has been removed by bot using assign role system. Action has been triggered by user.");
             }
-
         }
 
         [Command("addRole")]
@@ -196,60 +92,8 @@ namespace OurIdolBot.Commands.RolesCommands
         public async Task AddRole(CommandContext ctx, [RemainingText] string message)
         {
             await ctx.TriggerTypingAsync();
-
-            using (var databaseContext = new DynamicDBContext())
-            {
-                Server dbServer = GetServerFromDatabase(databaseContext, ctx.Guild.Id);
-
-                // Get server roles.
-                var serverRoles = ctx.Guild.Roles;
-
-                foreach (var serverRole in serverRoles)
-                {
-                    if (serverRole.Value.Name == message)
-                    {
-                        // Check if role is already in database
-                        if (IsRoleInDatabase(dbServer, serverRole.Value.Id))
-                        {
-                            await ctx.RespondAsync("The role is already on the list.");
-                            return;
-                        }
-
-                        // User who triggered is owner, we can add role without problem
-                        if (ctx.User == ctx.Guild.Owner)
-                        {
-                            AssignRole assingRole = new AssignRole(serverRole.Value.Id);
-                            assingRole.Server = dbServer;
-                            databaseContext.Add(assingRole);
-                            databaseContext.SaveChanges();
-                            await ctx.RespondAsync("Role added to the role list.");
-                        }
-                        // User who triggered isn't owner, we need to check if role is lower than the highest role he has
-                        else
-                        {
-                            var userTheHighestRolePosition = GetTheHighestRolePosition(ctx.Member.Roles.ToList());
-                            // Role is lower than the highest role user has
-                            if (serverRole.Value.Position < userTheHighestRolePosition)
-                            {
-                                AssignRole assingRole = new AssignRole(serverRole.Value.Id);
-                                assingRole.Server = dbServer;
-                                databaseContext.Add(assingRole);
-                                databaseContext.SaveChanges();
-                                await ctx.RespondAsync("Role added to the role list.");
-                            }
-                            // Role is equal or higher than the highest role user has
-                            else
-                            {
-                                await ctx.RespondAsync("You can not add this role because it is equal or higher than your highest role.");
-                            }
-
-                        }
-
-                        return;
-                    }
-                }
-                await ctx.RespondAsync("The given role does not exist.");
-            }
+            var result = _assignRolesService.AddRole(ctx.Guild.Id, ctx.Guild.Roles, ctx.Guild.Owner, ctx.Member, message);
+            await ctx.RespondAsync(result);
         }
 
         [Command("deleteRole")]
@@ -259,57 +103,8 @@ namespace OurIdolBot.Commands.RolesCommands
         public async Task DeleteRole(CommandContext ctx, [RemainingText] string message)
         {
             await ctx.TriggerTypingAsync();
-
-            using (var databaseContext = new DynamicDBContext())
-            {
-                Server dbServer = GetServerFromDatabase(databaseContext, ctx.Guild.Id);
-
-                // Get server roles.
-                var serverRoles = ctx.Guild.Roles;
-
-                foreach (var serverRole in serverRoles)
-                {
-                    if (serverRole.Value.Name == message)
-                    {
-
-                        // Check if role is already in database
-                        if (!IsRoleInDatabase(dbServer, serverRole.Value.Id))
-                        {
-                            await ctx.RespondAsync("Roli is not on the list.");
-                            return;
-                        }
-
-                        // User who triggered is owner, we can add role without problem
-                        if (ctx.User == ctx.Guild.Owner)
-                        {
-                            dbServer.AssignRoles.RemoveAll(p => p.RoleID == serverRole.Value.Id.ToString());
-                            databaseContext.SaveChanges();
-                            await ctx.RespondAsync("Role removed from the role list.");
-                        }
-                        // User who triggered isn't owner, we need to check if role is lower than the highest role he has
-                        else
-                        {
-                            var userTheHighestRolePosition = GetTheHighestRolePosition(ctx.Member.Roles.ToList());
-                            // Role is lower than the highest role user has
-                            if (serverRole.Value.Position < userTheHighestRolePosition)
-                            {
-                                dbServer.AssignRoles.RemoveAll(p => p.RoleID == serverRole.Value.Id.ToString());
-                                databaseContext.SaveChanges();
-                                await ctx.RespondAsync("Role removed from the role list.");
-                            }
-                            // Role is equal or higher than the highest role user has
-                            else
-                            {
-                                await ctx.RespondAsync("You can not remove this role because it is equal or higher than your highest role.");
-                            }
-
-                        }
-
-                        return;
-                    }
-                }
-                await ctx.RespondAsync("The given role does not exist.");
-            }
+            var result = _assignRolesService.DeleteRole(ctx.Guild.Id, ctx.Guild.Roles, ctx.Guild.Owner, ctx.Member, message);
+            await ctx.RespondAsync(result);
         }
 
         private Server GetServerFromDatabase(DynamicDBContext databaseContext, ulong GuildId)

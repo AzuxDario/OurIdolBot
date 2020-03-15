@@ -3,11 +3,13 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Exceptions;
 using DSharpPlus.Exceptions;
 using DSharpPlus.Net.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using OurIdolBot.Attributes;
 using OurIdolBot.Commands.ManagementCommands;
 using OurIdolBot.Commands.MusicCommands;
 using OurIdolBot.Commands.OtherCommands;
+using OurIdolBot.Services.RolesServices;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -82,7 +84,8 @@ namespace OurIdolBot.Core
                 StringPrefixes = new[] { configJson.CommandPrefix },
                 EnableDms = true,
                 EnableMentionPrefix = true,
-                CaseSensitive = false
+                CaseSensitive = false,
+                Services = BuildDependencies()
             };
 
             _commands = DiscordClient.UseCommandsNext(commandsConfig);
@@ -92,6 +95,13 @@ namespace OurIdolBot.Core
             RegisterCommands();
 
             await DiscordClient.ConnectAsync();
+        }
+
+        private ServiceProvider BuildDependencies()
+        {
+            return new ServiceCollection()
+                .AddScoped<AssignRolesService>()
+                .BuildServiceProvider();
         }
 
         private void SetNetworkParameters()
