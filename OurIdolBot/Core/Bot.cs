@@ -9,6 +9,7 @@ using OurIdolBot.Attributes;
 using OurIdolBot.Commands.ManagementCommands;
 using OurIdolBot.Commands.MusicCommands;
 using OurIdolBot.Commands.OtherCommands;
+using OurIdolBot.Services.PicturesServices;
 using OurIdolBot.Services.RolesServices;
 using System;
 using System.Collections.Generic;
@@ -101,6 +102,7 @@ namespace OurIdolBot.Core
         {
             return new ServiceCollection()
                 .AddScoped<AssignRolesService>()
+                .AddScoped<NekosLifeImageService>()
                 .BuildServiceProvider();
         }
 

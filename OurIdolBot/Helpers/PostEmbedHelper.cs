@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace OurIdolBot.Helpers
 {
-    static class PostEmbedHelper
+    static class EmbedHelper
     {
-        public static async Task PostEmbed(CommandContext ctx, string title = null, string description = null, string imageLink = null, string footerText = null)
+        public static async Task<DiscordEmbed> CreateEmbed(CommandContext ctx, string title = null, string description = null, string imageLink = null, string footerText = null)
         {
             var embed = new DiscordEmbedBuilder
             {
@@ -23,6 +23,7 @@ namespace OurIdolBot.Helpers
                 embed.Footer = new DiscordEmbedBuilder.EmbedFooter();
                 embed.Footer.Text = footerText;
             }
+            return embed;
             await ctx.RespondAsync(null, false, embed);
         }
     }

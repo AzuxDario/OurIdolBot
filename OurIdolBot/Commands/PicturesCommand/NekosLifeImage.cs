@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OurIdolBot.Const.PicturesConst;
 using DSharpPlus.CommandsNext.Attributes;
+using OurIdolBot.Services.PicturesServices;
 
 namespace OurIdolBot.Commands.PicturesCommand
 {
@@ -18,6 +19,13 @@ namespace OurIdolBot.Commands.PicturesCommand
     public class NekosLifeImage : BaseCommandModule
     {
         private const string footerText = "Powered by nekos.life";
+
+        private readonly NekosLifeImageService _nekosLifeImageService;
+
+        public NekosLifeImage(NekosLifeImageService nekosLifeImageService)
+        {
+            _nekosLifeImageService = nekosLifeImageService;
+        }
 
         [Command("catgirl")]
         public async Task CatGirl(CommandContext ctx, [Description("Mention")] DiscordMember member = null)
@@ -133,19 +141,10 @@ namespace OurIdolBot.Commands.PicturesCommand
 
         public async Task SendImage(CommandContext ctx, string endpoint, string title, [Description("Mention")] DiscordMember member = null)
         {
-            await ctx.TriggerTypingAsync();
-
-            var client = new WebClient();
-            var url = client.DownloadString(endpoint);
-            var pictureContainer = JsonConvert.DeserializeObject<NekosFileImage>(url);
-
-            await PostEmbedHelper.PostEmbed(ctx, title, member?.Mention, pictureContainer.Url, footerText);
+            var pictureContainer = _nekosLifeImageService.GetImage(endpoint);
+            var embed = await EmbedHelper.CreateEmbed(ctx, title, member?.Mention, pictureContainer.Url, footerText);
+            await ctx.RespondAsync(null, false, embed);
         }
 
-        public string GetExtension(string url)
-        {
-            var array = url.Split('.');
-            return array[array.Length - 1];
-        }
     }
 }
