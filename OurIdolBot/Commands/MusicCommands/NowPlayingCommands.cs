@@ -3,6 +3,7 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using OurIdolBot.Attributes;
 using OurIdolBot.Const.MusicConst;
+using OurIdolBot.Helpers;
 using OurIdolBot.Providers.MusicProviders;
 using System;
 using System.Collections.Generic;
@@ -224,15 +225,12 @@ namespace OurIdolBot.Commands.MusicCommands
 
         private DiscordEmbed CreateEmbedWithSongData()
         {
-            var embed = new DiscordEmbedBuilder
-            {
-                Color = new DiscordColor("#5588EE")
-            };
-            embed.AddField("Current playing songs", "**Radio Anison FM**\n" + currentAnisonPlayingSong + "\n" + RadiosLinksConst.AnisonFm + 
-                "\n\n**Radio Blue Anime Ivana**\n" + currentBlueIvanaPlayingSong + "\n" + RadiosLinksConst.BlueIvana +
-                "\n\n**J-Pop Project Radio (JMusic)**\n" + currentJMusicPlayingSong + "\n" + RadiosLinksConst.JMusic +
-                //"\n\n**Anime NFO Radio**\n" + currentAnimeNFOPlayingSong + "\n" + RadiosLinksConst.AnimeNFO +
-                "\n\nLast update: " + DateTime.UtcNow.ToString(@"HH:mm:ss") + " UTC");
+            var embed = EmbedHelper.CreateEmbed(new DiscordColor("#5588EE"), "Current playing songs",
+            "Current playing songs", "**Radio Anison FM**\n" + currentAnisonPlayingSong + "\n" + RadiosLinksConst.AnisonFm + 
+            "\n\n**Radio Blue Anime Ivana**\n" + currentBlueIvanaPlayingSong + "\n" + RadiosLinksConst.BlueIvana +
+            "\n\n**J-Pop Project Radio (JMusic)**\n" + currentJMusicPlayingSong + "\n" + RadiosLinksConst.JMusic +
+            //"\n\n**Anime NFO Radio**\n" + currentAnimeNFOPlayingSong + "\n" + RadiosLinksConst.AnimeNFO +
+            "\n\nLast update: " + DateTime.UtcNow.ToString(@"HH:mm:ss") + " UTC", null);
             return embed;
         }
 

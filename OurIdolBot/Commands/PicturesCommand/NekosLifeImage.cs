@@ -142,7 +142,7 @@ namespace OurIdolBot.Commands.PicturesCommand
         public async Task SendImage(CommandContext ctx, string endpoint, string title, [Description("Mention")] DiscordMember member = null)
         {
             var pictureContainer = _nekosLifeImageService.GetImage(endpoint);
-            var embed = await EmbedHelper.CreateEmbed(ctx, title, member?.Mention, pictureContainer.Url, footerText);
+            var embed = EmbedHelper.CreateEmbed(new DiscordColor("#00a8ff"), title, member?.Mention, pictureContainer.Url, footerText);
             await ctx.RespondAsync(null, false, embed);
         }
 
