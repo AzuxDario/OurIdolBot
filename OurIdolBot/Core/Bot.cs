@@ -3,11 +3,14 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Exceptions;
 using DSharpPlus.Exceptions;
 using DSharpPlus.Net.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using OurIdolBot.Attributes;
 using OurIdolBot.Commands.ManagementCommands;
 using OurIdolBot.Commands.MusicCommands;
 using OurIdolBot.Commands.OtherCommands;
+using OurIdolBot.Services.PicturesServices;
+using OurIdolBot.Services.RolesServices;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,6 +24,12 @@ namespace OurIdolBot.Core
 {
     class Bot
     {
+#if DEBUG
+        readonly string botname = "Our Idol Test";
+#else
+        readonly string botname = "Our Idol";
+#endif
+
         public struct ConfigJson
         {
             [JsonProperty("token")]
@@ -67,12 +76,6 @@ namespace OurIdolBot.Core
                 AutoReconnect = true,
                 LogLevel = LogLevel.Debug,
                 UseInternalLogHandler = true
-
-#if DEBUG
-                ,
-                // For Windows 7 I'm using to test
-                WebSocketClientFactory = WebSocket4NetCoreClient.CreateNew
-#endif
             };
 
             DiscordClient = new DiscordClient(connectionConfig);
@@ -82,7 +85,8 @@ namespace OurIdolBot.Core
                 StringPrefixes = new[] { configJson.CommandPrefix },
                 EnableDms = true,
                 EnableMentionPrefix = true,
-                CaseSensitive = false
+                CaseSensitive = false,
+                Services = BuildDependencies()
             };
 
             _commands = DiscordClient.UseCommandsNext(commandsConfig);
@@ -92,6 +96,14 @@ namespace OurIdolBot.Core
             RegisterCommands();
 
             await DiscordClient.ConnectAsync();
+        }
+
+        private ServiceProvider BuildDependencies()
+        {
+            return new ServiceCollection()
+                .AddScoped<AssignRolesService>()
+                .AddScoped<NekosLifeImageService>()
+                .BuildServiceProvider();
         }
 
         private void SetNetworkParameters()
@@ -120,14 +132,14 @@ namespace OurIdolBot.Core
 
         private Task Commands_CommandExecuted(CommandExecutionEventArgs e)
         {
-            e.Context.Client.DebugLogger.LogMessage(LogLevel.Info, "ExampleBot", $"{e.Context.User.Username} successfully executed '{e.Command.QualifiedName}'", DateTime.Now);
+            e.Context.Client.DebugLogger.LogMessage(LogLevel.Info, botname, $"{e.Context.User.Username} successfully executed '{e.Command.QualifiedName}'", DateTime.Now);
 
             return Task.FromResult(0);
         }
 
         private async Task Commands_CommandErrored(CommandErrorEventArgs e)
         {
-            e.Context.Client.DebugLogger.LogMessage(LogLevel.Error, "ExampleBot", $"{e.Context.User.Username} tried executing '{e.Command?.QualifiedName ?? "<unknown command>"}' but it errored: {e.Exception.GetType()}: {e.Exception.Message ?? "<no message>"}", DateTime.Now);
+            e.Context.Client.DebugLogger.LogMessage(LogLevel.Error, botname, $"{e.Context.User.Username} tried executing '{e.Command?.QualifiedName ?? "<unknown command>"}' but it errored: {e.Exception.GetType()}: {e.Exception.Message ?? "<no message>"}", DateTime.Now);
 
             switch (e.Exception)
             {

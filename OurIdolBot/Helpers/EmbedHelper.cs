@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace OurIdolBot.Helpers
 {
-    static class PostEmbedHelper
+    static class EmbedHelper
     {
-        public static async Task PostEmbed(CommandContext ctx, string title = null, string description = null, string imageLink = null, string footerText = null)
+        public static DiscordEmbed CreateEmbed(DiscordColor color, string title = null, string description = null, string imageLink = null, string footerText = null)
         {
             var embed = new DiscordEmbedBuilder
             {
-                Color = new DiscordColor("#00a8ff"),
+                Color = color,
                 ImageUrl = imageLink,
                 Description = description,
                 Title = title
@@ -23,7 +23,7 @@ namespace OurIdolBot.Helpers
                 embed.Footer = new DiscordEmbedBuilder.EmbedFooter();
                 embed.Footer.Text = footerText;
             }
-            await ctx.RespondAsync(null, false, embed);
+            return embed;
         }
     }
 }

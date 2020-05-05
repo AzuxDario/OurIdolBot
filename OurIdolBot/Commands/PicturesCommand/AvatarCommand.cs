@@ -21,11 +21,13 @@ namespace OurIdolBot.Commands.PicturesCommand
 
             if (member == null)
             {
-                await PostEmbedHelper.PostEmbed(ctx, "Avatar", ctx.User.Mention, ctx.User.AvatarUrl);
+                var embed = EmbedHelper.CreateEmbed(new DiscordColor("#00a8ff"), "Avatar", ctx.User.Mention, ctx.User.AvatarUrl);
+                await ctx.RespondAsync(null, false, embed);
             }
             else
             {
-                await PostEmbedHelper.PostEmbed(ctx, "Avatar", member.Mention, member.AvatarUrl);
+                var embed = EmbedHelper.CreateEmbed(new DiscordColor("#00a8ff"), "Avatar", member.Mention, member.AvatarUrl);
+                await ctx.RespondAsync(null, false, embed);
             }
         }
     }
