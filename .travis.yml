@@ -1,0 +1,8 @@
+language: csharp
+dist: bionic
+mono: none
+dotnet: 2.0.0
+script:
+  - dotnet build -c Release
+notifications:
+  email: false

@@ -48,14 +48,6 @@ namespace OurIdolBot.Providers.MusicProviders
                 Console.WriteLine("Exception: " + ie.Message);
                 Console.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
                 Console.WriteLine("Stack trace: " + ie.StackTrace);
-                using (var streamWriter = new StreamWriter("jsons.txt", true, Encoding.UTF8))
-                {
-                    streamWriter.WriteLine("Error: I couldn't get song name or error with Anison web site appeared or error with parsing.");
-                    streamWriter.WriteLine("Exception: " + ie.Message);
-                    streamWriter.WriteLine("Inner Exception: " + ie?.InnerException?.Message);
-                    streamWriter.WriteLine("Stack trace: " + ie.StackTrace);
-                    streamWriter.WriteLine("JSON: " + json);
-                }
             }
 
             return currentAnisonPlayingSong;

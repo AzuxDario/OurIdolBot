@@ -1,4 +1,10 @@
 # Our Idol bot
+<p align="center">
+<a href="https://travis-ci.org/AzuxDario/OurIdolBot"><img src="https://travis-ci.org/AzuxDario/OurIdolBot.svg?branch=master" alt="Build status"></img></a>
+<a href="https://github.com/AzuxDario/OurIdolBot/pulls?q=is%3Apr+is%3Aclosed"><img src="https://img.shields.io/github/issues-pr-closed-raw/AzuxDario/OurIdolBot" alt="Closed pull requests"></img></a>
+<a href="https://github.com/AzuxDario/OurIdolBot/blob/master/LICENSE"><img src="https://img.shields.io/github/license/AzuxDario/OurIdolBot" alt="License"></img></a>
+</p>
+
 Simple Discord bot which can send  info about currently playing song by AnisonFM, J-Pop Project Radio,  Blue Anime Ivana. The bot can shows info once or auto update it on chosen channel every 15 seconds. Bot also shows links to these radios.
 
 # Origin
