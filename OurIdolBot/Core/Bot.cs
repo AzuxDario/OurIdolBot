@@ -1,5 +1,6 @@
 ﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.CommandsNext.Exceptions;
 using DSharpPlus.Exceptions;
 using DSharpPlus.Net.WebSocket;
@@ -143,9 +144,34 @@ namespace OurIdolBot.Core
 
             switch (e.Exception)
             {
-                case Checks​Failed​Exception _:
+                case Checks​Failed​Exception ex:
                     {
-                        await e.Context.Channel.SendMessageAsync("Sorry, I or you don't have enough permissions to perform this action.");
+                        StringBuilder messageToSend = new StringBuilder();
+                        messageToSend.Append("Not enough permissions to complete the action.").AppendLine();
+
+                        var failedChecks = ex.FailedChecks;
+                        foreach (var failedCheck in failedChecks)
+                        {
+                            if (failedCheck is RequireBotPermissionsAttribute failBot)
+                            {
+                                messageToSend.Append("I need: ");
+                                messageToSend.Append(failBot.Permissions.ToPermissionString());
+                                messageToSend.AppendLine();
+                            }
+                            else if (failedCheck is RequireUserPermissionsAttribute failUser)
+                            {
+                                messageToSend.Append("You need: ");
+                                messageToSend.Append(failUser.Permissions.ToPermissionString());
+                                messageToSend.AppendLine();
+                            }
+                            else if (failedCheck is RequireOwnerAttribute)
+                            {
+                                messageToSend.Append("This command can be used only by bot owner.");
+                                messageToSend.AppendLine();
+                            }
+                        }
+
+                        await e.Context.Channel.SendMessageAsync(messageToSend.ToString());
                         break;
                     }
                 case UnauthorizedException _:
