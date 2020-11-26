@@ -70,11 +70,11 @@ namespace OurIdolBot.Commands.RolesCommands
                 return;
             }
 
-            if (HasUserRole(ctx.Member, role.Value))
+            /*if (HasUserRole(ctx.Member, role.Value))
             {
                 await ctx.RespondAsync("You already have this role.");
                 return;
-            }
+            }*/
 
             if (_assignRolesService.IsRoleOnList(role.Value.Id))
             {
@@ -110,11 +110,11 @@ namespace OurIdolBot.Commands.RolesCommands
                 return;
             }
 
-            if (!HasUserRole(ctx.Member, role.Value))
+            /*if (!HasUserRole(ctx.Member, role.Value))
             {
                 await ctx.RespondAsync("You do not have this role.");
                 return;
-            }
+            }*/
 
             if (_assignRolesService.IsRoleOnList(role.Value.Id))
             {
