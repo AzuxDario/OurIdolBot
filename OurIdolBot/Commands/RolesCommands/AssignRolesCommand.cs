@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using OurIdolBot.Attributes;
 using OurIdolBot.Database.Models;
 using OurIdolBot.Database.Models.DynamicDB;
+using OurIdolBot.Helpers;
 using OurIdolBot.Services.RolesServices;
 using System;
 using System.Collections.Generic;
@@ -29,29 +30,26 @@ namespace OurIdolBot.Commands.RolesCommands
         public async Task ShowRoles(CommandContext ctx)
         {
             await ctx.TriggerTypingAsync();
-            var message = _assignRolesService.ShowRoles(ctx.Guild.Id, ctx.Guild.Roles);
-            StringBuilder messagePart = new StringBuilder();
-            for(int i = 0; i < message.Count; i++)
+
+            var assignRoles = _assignRolesService.GetRoles(ctx.Guild.Id);
+
+            if (assignRoles.Count == 0)
             {
-                if(messagePart.Length > 1800)
+                await ctx.RespondAsync("There are no roles on this server that you can assign.");
+            }
+            else
+            {
+                // Get server roles.
+                var serverRoles = ctx.Guild.Roles;
+
+                List<DiscordRole> discordRoles = new List<DiscordRole>();
+                foreach (ulong roleId in assignRoles)
                 {
-                    await ctx.RespondAsync(messagePart.ToString());
-                    messagePart.Clear(); ;
+                    discordRoles.Add(serverRoles.Where(p => p.Value.Id == roleId).FirstOrDefault().Value);
                 }
 
-                if(i == 0 || i == 1)
-                {
-                    messagePart.Append(message[i]);
-                }
-                else
-                {
-                    messagePart.Append(", ");
-                    messagePart.Append(message[i]);
-                }
-            }
-            if (messagePart.Length > 0)
-            {
-                await ctx.RespondAsync(messagePart.ToString());
+                List<DiscordRole> sortedRoles = discordRoles.OrderBy(o => o.Name).ToList();
+                await PostLongMessageHelper.PostLongMessage(ctx, sortedRoles.Select(p => p.Name).ToList(), "**The roles available on the server are:**\n", ", ");
             }
         }
 
@@ -59,14 +57,39 @@ namespace OurIdolBot.Commands.RolesCommands
         [Description("Assign role to you from the role list.")]
         [RequireBotPermissions(DSharpPlus.Permissions.ManageRoles)]
         [RequireUserPermissions(DSharpPlus.Permissions.None)]
-        public async Task AssignRole(CommandContext ctx, [RemainingText] string message)
+        public async Task GiveRole(CommandContext ctx, [RemainingText] string message)
         {
             await ctx.TriggerTypingAsync();
-            var result = _assignRolesService.AssignRole(ctx.Guild.Id, ctx.Guild.Roles, ctx.Member, message);
-            await ctx.RespondAsync(result.Item1);
-            if(result.Item2 != null)
+
+            var serverRoles = ctx.Guild.Roles;
+            var role = serverRoles.Select(p => p).Where(q => q.Value.Name == message).FirstOrDefault();
+
+            if (role.Value == null)
             {
-                await ctx.Member.GrantRoleAsync(result.Item2, "Role has been assigned by bot using assign role system. Action has been triggered by user.");
+                await ctx.RespondAsync("Given role doesn't exist.");
+                return;
+            }
+
+            /*if (HasUserRole(ctx.Member, role.Value))
+            {
+                await ctx.RespondAsync("You already have this role.");
+                return;
+            }*/
+
+            if (_assignRolesService.IsRoleOnList(role.Value.Id))
+            {
+                if (!CanBotModifyThisRole(role.Value, ctx.Guild.CurrentMember.Roles.ToList()))
+                {
+                    await ctx.RespondAsync("My roles are too low for me to give this role.");
+                    return;
+                }
+
+                await ctx.Member.GrantRoleAsync(role.Value, "Role has been assigned by bot using assign role system. Action has been triggered by user.");
+                await ctx.RespondAsync("Role has been assigned.");
+            }
+            else
+            {
+                await ctx.RespondAsync("Role is not on the list.");
             }
         }
 
@@ -77,11 +100,35 @@ namespace OurIdolBot.Commands.RolesCommands
         public async Task RemoveRole(CommandContext ctx, [RemainingText] string message)
         {
             await ctx.TriggerTypingAsync();
-            var result = _assignRolesService.RemoveRole(ctx.Guild.Id, ctx.Guild.Roles, ctx.Member, message);
-            await ctx.RespondAsync(result.Item1);
-            if (result.Item2 != null)
+
+            var serverRoles = ctx.Guild.Roles;
+            var role = serverRoles.Select(p => p).Where(q => q.Value.Name == message).FirstOrDefault();
+
+            if (role.Value == null)
             {
-                await ctx.Member.GrantRoleAsync(result.Item2, "Role has been removed by bot using assign role system. Action has been triggered by user.");
+                await ctx.RespondAsync("Given role doesn't exist.");
+                return;
+            }
+
+            /*if (!HasUserRole(ctx.Member, role.Value))
+            {
+                await ctx.RespondAsync("You do not have this role.");
+                return;
+            }*/
+
+            if (_assignRolesService.IsRoleOnList(role.Value.Id))
+            {
+                if (!CanBotModifyThisRole(role.Value, ctx.Guild.CurrentMember.Roles.ToList()))
+                {
+                    await ctx.RespondAsync("My roles are too low for me to remove this role.");
+                    return;
+                }
+                await ctx.Member.RevokeRoleAsync(role.Value, "Role has been removed by bot using assign role system. Action has been triggered by user.");
+                await ctx.RespondAsync("Role has been removed.");
+            }
+            else
+            {
+                await ctx.RespondAsync("Role is not on the list.");
             }
         }
 
@@ -92,8 +139,34 @@ namespace OurIdolBot.Commands.RolesCommands
         public async Task AddRole(CommandContext ctx, [RemainingText] string message)
         {
             await ctx.TriggerTypingAsync();
-            var result = _assignRolesService.AddRole(ctx.Guild.Id, ctx.Guild.Roles, ctx.Guild.Owner, ctx.Member, message);
-            await ctx.RespondAsync(result);
+
+            var serverRoles = ctx.Guild.Roles;
+            var role = serverRoles.Select(p => p).Where(q => q.Value.Name == message).FirstOrDefault();
+
+            if (role.Value == null)
+            {
+                await ctx.RespondAsync("Given role doesn't exist.");
+                return;
+            }
+
+            if (_assignRolesService.IsRoleOnList(role.Value.Id))
+            {
+                await ctx.RespondAsync("The role is already on the list.");
+                return;
+            }
+
+            // User who triggered is owner, we can add role without problem or user who triggered isn't owner, we need to check if role is lower than the highest role he has
+            var userTheHighestRolePosition = GetTheHighestRolePosition(ctx.Member.Roles.ToList());
+            if (ctx.User == ctx.Guild.Owner || role.Value.Position < userTheHighestRolePosition)
+            {
+                // Add role to database
+                _assignRolesService.AddRoleToDatabase(ctx.Guild.Id, role.Value.Id);
+                await ctx.RespondAsync("Role added to the role list.");
+            }
+            else
+            {
+                await ctx.RespondAsync("You can not add this role because it is equal or higher than your highest role.");
+            }
         }
 
         [Command("deleteRole")]
@@ -103,23 +176,34 @@ namespace OurIdolBot.Commands.RolesCommands
         public async Task DeleteRole(CommandContext ctx, [RemainingText] string message)
         {
             await ctx.TriggerTypingAsync();
-            var result = _assignRolesService.DeleteRole(ctx.Guild.Id, ctx.Guild.Roles, ctx.Guild.Owner, ctx.Member, message);
-            await ctx.RespondAsync(result);
-        }
 
-        private Server GetServerFromDatabase(DynamicDBContext databaseContext, ulong GuildId)
-        {
-            Server dbServer = databaseContext.Servers.Where(p => p.ServerID == GuildId.ToString()).Include(p => p.AssignRoles).FirstOrDefault();
+            var serverRoles = ctx.Guild.Roles;
+            var role = serverRoles.Select(p => p).Where(q => q.Value.Name == message).FirstOrDefault();
 
-            //If server is not present in database add it.
-            if (dbServer == null)
+            if (role.Value == null)
             {
-                dbServer = new Server(GuildId);
-                dbServer.AssignRoles = new List<AssignRole>();
-                databaseContext.Add(dbServer);
-                databaseContext.SaveChanges();
+                await ctx.RespondAsync("The given role does not exist.");
+                return;
             }
-            return dbServer;
+
+            if (!_assignRolesService.IsRoleOnList(role.Value.Id))
+            {
+                await ctx.RespondAsync("The role is not on the list.");
+                return;
+            }
+
+            // User who triggered is owner, we can add role without problem or user who triggered isn't owner, we need to check if role is lower than the highest role he has
+            var userTheHighestRolePosition = GetTheHighestRolePosition(ctx.Member.Roles.ToList());
+            if (ctx.User == ctx.Guild.Owner || role.Value.Position < userTheHighestRolePosition)
+            {
+                // Add role to database
+                _assignRolesService.RemoveRoleFromDatabase(ctx.Guild.Id, role.Value.Id);
+                await ctx.RespondAsync("Role removed from the role list.");
+            }
+            else
+            {
+                await ctx.RespondAsync("You can not remove this role because it is equal or higher than your highest role.");
+            }
         }
 
         private bool HasUserRole(DiscordMember member, DiscordRole role)
@@ -134,6 +218,19 @@ namespace OurIdolBot.Commands.RolesCommands
             return false;
         }
 
+        private bool CanBotModifyThisRole(DiscordRole role, List<DiscordRole> botRoles)
+        {
+            int highestBotRole = GetTheHighestRolePosition(botRoles);
+            if (role.Position < highestBotRole)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         private int GetTheHighestRolePosition(List<DiscordRole> roles)
         {
             int position = 0;
@@ -146,19 +243,6 @@ namespace OurIdolBot.Commands.RolesCommands
             }
 
             return position;
-        }
-
-        private bool IsRoleInDatabase(Server server, ulong roleId)
-        {
-            if (server.AssignRoles == null || server.AssignRoles.Count == 0)
-            {
-                return false;
-            }
-            if (server.AssignRoles.FirstOrDefault(p => p.RoleID == roleId.ToString()) == null)
-            {
-                return false;
-            }
-            return true;
         }
     }
 }

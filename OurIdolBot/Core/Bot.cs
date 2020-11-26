@@ -1,9 +1,11 @@
 ﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.CommandsNext.Exceptions;
 using DSharpPlus.Exceptions;
 using DSharpPlus.Net.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using OurIdolBot.Attributes;
 using OurIdolBot.Commands.ManagementCommands;
@@ -74,8 +76,7 @@ namespace OurIdolBot.Core
                 TokenType = TokenType.Bot,
 
                 AutoReconnect = true,
-                LogLevel = LogLevel.Debug,
-                UseInternalLogHandler = true
+                MinimumLogLevel = LogLevel.Debug
             };
 
             DiscordClient = new DiscordClient(connectionConfig);
@@ -130,22 +131,47 @@ namespace OurIdolBot.Core
             }
         }
 
-        private Task Commands_CommandExecuted(CommandExecutionEventArgs e)
+        private Task Commands_CommandExecuted(CommandsNextExtension extension, CommandExecutionEventArgs e)
         {
-            e.Context.Client.DebugLogger.LogMessage(LogLevel.Info, botname, $"{e.Context.User.Username} successfully executed '{e.Command.QualifiedName}'", DateTime.Now);
+            e.Context.Client.Logger.Log(LogLevel.Information, $"{e.Context.User.Username} successfully executed '{e.Command.QualifiedName}'");
 
             return Task.FromResult(0);
         }
 
-        private async Task Commands_CommandErrored(CommandErrorEventArgs e)
+        private async Task Commands_CommandErrored(CommandsNextExtension extension, CommandErrorEventArgs e)
         {
-            e.Context.Client.DebugLogger.LogMessage(LogLevel.Error, botname, $"{e.Context.User.Username} tried executing '{e.Command?.QualifiedName ?? "<unknown command>"}' but it errored: {e.Exception.GetType()}: {e.Exception.Message ?? "<no message>"}", DateTime.Now);
+            e.Context.Client.Logger.Log(LogLevel.Error, $"{e.Context.User.Username} tried executing '{e.Command?.QualifiedName ?? "<unknown command>"}' but it errored: {e.Exception.GetType()}: {e.Exception.Message ?? "<no message>"}.");
 
             switch (e.Exception)
             {
-                case Checks​Failed​Exception _:
+                case Checks​Failed​Exception ex:
                     {
-                        await e.Context.Channel.SendMessageAsync("Sorry, I or you don't have enough permissions to perform this action.");
+                        StringBuilder messageToSend = new StringBuilder();
+                        messageToSend.Append("Not enough permissions to complete the action.").AppendLine();
+
+                        var failedChecks = ex.FailedChecks;
+                        foreach (var failedCheck in failedChecks)
+                        {
+                            if (failedCheck is RequireBotPermissionsAttribute failBot)
+                            {
+                                messageToSend.Append("I need: ");
+                                messageToSend.Append(failBot.Permissions.ToPermissionString());
+                                messageToSend.AppendLine();
+                            }
+                            else if (failedCheck is RequireUserPermissionsAttribute failUser)
+                            {
+                                messageToSend.Append("You need: ");
+                                messageToSend.Append(failUser.Permissions.ToPermissionString());
+                                messageToSend.AppendLine();
+                            }
+                            else if (failedCheck is RequireOwnerAttribute)
+                            {
+                                messageToSend.Append("This command can be used only by bot owner.");
+                                messageToSend.AppendLine();
+                            }
+                        }
+
+                        await e.Context.Channel.SendMessageAsync(messageToSend.ToString());
                         break;
                     }
                 case UnauthorizedException _:

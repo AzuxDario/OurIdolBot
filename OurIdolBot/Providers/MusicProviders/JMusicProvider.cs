@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace OurIdolBot.Providers.MusicProviders
@@ -16,18 +17,15 @@ namespace OurIdolBot.Providers.MusicProviders
         public async Task<string> GetJMusicSongInfo()
         {
             string currentJMusicPlayingSong = "";
-            string json = "";
+            string site = "";
             try
             {
                 var client = new WebClient();
-                NowPlayingJMusicContainer nowPlayingContainer;
-
-                json = client.DownloadString(RadiosLinksDataConst.JMusic);
-                if (json.Length > 0)
+                client.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.92 Safari/537.36");
+                site = client.DownloadString(RadiosLinksDataConst.JMusic);
+                if (site.Length > 0)
                 {
-                    nowPlayingContainer = JsonConvert.DeserializeObject<NowPlayingJMusicContainer>(json);
-
-                    currentJMusicPlayingSong = nowPlayingContainer.Song;
+                    currentJMusicPlayingSong = ClearJMusicString(site);
 
                     if (currentJMusicPlayingSong == string.Empty)
                     {
@@ -49,6 +47,17 @@ namespace OurIdolBot.Providers.MusicProviders
                 Console.WriteLine("Stack trace: " + ie.StackTrace);
             }
             return currentJMusicPlayingSong;
+        }
+
+        private string ClearJMusicString(string input)
+        {
+            Regex regex = new Regex("Playing Now: </td><td><b><a href=\"currentsong\\?sid=1\">(.*)</a></b></td></tr>");
+            Match match = regex.Match(input);
+            if (match.Success)
+            {
+                return WebUtility.HtmlDecode(match.Groups[1].Value);
+            }
+            return string.Empty;
         }
     }
 }
