@@ -36,7 +36,6 @@ namespace OurIdolBot.Helpers
             var embed = new DiscordEmbedBuilder
             {
                 ImageUrl = imageLink,
-                ThumbnailUrl = thumbnailLink,
                 Description = description,
                 Title = title,
                 Footer = footer
@@ -49,6 +48,12 @@ namespace OurIdolBot.Helpers
             else
             {
                 embed.Color = new DiscordColor(color);
+            }
+
+            if (thumbnailLink != null)
+            {
+                embed.Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail();
+                embed.Thumbnail.Url = thumbnailLink;
             }
 
             await ctx.RespondAsync(null, false, embed);
