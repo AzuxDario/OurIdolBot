@@ -76,7 +76,8 @@ namespace OurIdolBot.Core
                 TokenType = TokenType.Bot,
 
                 AutoReconnect = true,
-                MinimumLogLevel = LogLevel.Debug
+                MinimumLogLevel = LogLevel.Debug,
+                Intents = DiscordIntents.All
             };
 
             DiscordClient = new DiscordClient(connectionConfig);
