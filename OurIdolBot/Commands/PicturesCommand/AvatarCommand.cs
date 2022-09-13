@@ -22,12 +22,12 @@ namespace OurIdolBot.Commands.PicturesCommand
             if (member == null)
             {
                 var embed = EmbedHelper.CreateEmbed(new DiscordColor("#00a8ff"), "Avatar", ctx.User.Mention, ctx.User.AvatarUrl);
-                await ctx.RespondAsync(null, false, embed);
+                await ctx.RespondAsync(embed);
             }
             else
             {
                 var embed = EmbedHelper.CreateEmbed(new DiscordColor("#00a8ff"), "Avatar", member.Mention, member.AvatarUrl);
-                await ctx.RespondAsync(null, false, embed);
+                await ctx.RespondAsync(embed);
             }
         }
     }

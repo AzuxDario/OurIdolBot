@@ -154,7 +154,7 @@ namespace OurIdolBot.Commands.MusicCommands
         public async Task NowPlaying(CommandContext ctx)
         {
             // Post info about song
-            await ctx.RespondAsync("", false, CreateEmbedWithSongData());
+            await ctx.RespondAsync(CreateEmbedWithSongData());
         }
 
         private async void RepostSongInfo(EnabledChannel channel)
@@ -212,7 +212,7 @@ namespace OurIdolBot.Commands.MusicCommands
             }
             try
             {
-                channel.lastMessage = await channel.discordChannel.SendMessageAsync("", false, CreateEmbedWithSongData());
+                channel.lastMessage = await channel.discordChannel.SendMessageAsync(CreateEmbedWithSongData());
             }
             catch (Exception ie)
             {

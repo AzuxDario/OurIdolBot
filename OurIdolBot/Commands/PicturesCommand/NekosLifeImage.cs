@@ -143,7 +143,7 @@ namespace OurIdolBot.Commands.PicturesCommand
         {
             var pictureContainer = _nekosLifeImageService.GetImage(endpoint);
             var embed = EmbedHelper.CreateEmbed(new DiscordColor("#00a8ff"), title, member?.Mention, pictureContainer.Url, footerText);
-            await ctx.RespondAsync(null, false, embed);
+            await ctx.RespondAsync(embed);
         }
 
     }
